@@ -15,7 +15,8 @@ let stepCounterSett;
 function displayBar(token){
     if (stepCounterSett == 0) return;
     let inCombat = false;
-    if (game.combat>0)
+    
+    if (typeof game.combat !== 'undefined')
         for (let i=0; i<game.data.combat.length; i++){
             if (game.data.combat[i].round > 0) inCombat = true;
         }
@@ -370,7 +371,7 @@ Hooks.on('controlToken', (token,controlled)=>{
         
         //Check if combat is currently going on. Do not continue if not
         let inCombat = false;
-        if (game.combat>0)
+        if (typeof game.combat !== 'undefined')
             for (let i=0; i<game.data.combat.length; i++){
                 if (game.data.combat[i].round > 0) inCombat = true;
             }
