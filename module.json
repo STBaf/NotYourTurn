@@ -27,6 +27,6 @@
     "version:": "1.0",
     "compatibleCoreVersion": "0.6.6",
     "url": "https://github.com/CDeenen/StepCounter",
-    "manifest": "https://raw.githubusercontent.com/CDeenen/StepCounter/master/module.json",
-    "download": "https://github.com/CDeenen/StepCounter/archive/V1.0.zip"
+    "manifest": "https://github.com/CDeenen/StepCounter/releases/download/V1.0/module.json",
+    "download": "https://github.com/CDeenen/StepCounter/releases/download/V1.0/StepCounter.zip"
 }
