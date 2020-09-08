@@ -1,11 +1,20 @@
 {
     "name": "StepCounter",
     "title": "Step Counter",
-    "description": "test",
+    "description": "Counts the steps of tokens to allow easy tracking of movement, and gives a warning when a token is moved further than its speed. The module can also block token movement by players if it's not the token's turn, or if a token tries to move beyond it's movement speed.",
     "version": "1.0.0",
     "author": "CDeenen",
     "scripts": ["stepcounter.js"],
-    "packs": [],
+    "packs": [
+        {
+            "name": "stepCounter",
+            "label": "Step Counter",
+            "path": "stepcounter.db",
+            "entity": "Macro",
+            "System": "dnd5e",
+            "module": "stepCounter"
+        }
+    ],
     "compatibleCoreVersion": "0.6.6",
     "url": "https://github.com/CDeenen/StepCounter",
     "manifest": "https://github.com/CDeenen/StepCounter/releases/download/v1.0.0/module.json",
