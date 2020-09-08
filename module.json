@@ -14,7 +14,7 @@
             "stepcounter.js"
     ],
     "socket": true,
-    "packs": [
+    /*"packs": [
         {
             "name": "stepCounter",
             "label": "Step Counter",
@@ -23,7 +23,7 @@
             "System": "dnd5e",
             "module": "stepCounter"
         }
-    ],
+    ],*/
     "version:": "1.0.0",
     "compatibleCoreVersion": "0.6.6",
     "url": "https://github.com/CDeenen/StepCounter",
