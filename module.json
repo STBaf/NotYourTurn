@@ -14,16 +14,6 @@
             "stepcounter.js"
     ],
     "socket": true,
-    /*"packs": [
-        {
-            "name": "stepCounter",
-            "label": "Step Counter",
-            "path": "stepcounter.db",
-            "entity": "Macro",
-            "System": "dnd5e",
-            "module": "stepCounter"
-        }
-    ],*/
     "version:": "1.0.0",
     "compatibleCoreVersion": "0.6.6",
     "url": "https://github.com/CDeenen/StepCounter",
