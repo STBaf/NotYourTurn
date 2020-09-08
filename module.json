@@ -1,7 +1,7 @@
 {
     "name": "StepCounter",
     "title": "Step Counter",
-    "description": "Counts the steps of tokens to allow easy tracking of movement, and gives a warning when a token is moved further than its speed. Counter can be reset manually, or automatically at the start of a new combat round. The module can also block token movement by players if it's not the token's turn, and can block movement beyond the token's speed.",
+    "description": "",
     "author": "CDeenen",
     "scripts": [
             "stepcounter.js"
