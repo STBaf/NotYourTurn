@@ -4,7 +4,7 @@
     "description": "",
     "author": "CDeenen",
     "scripts": [
-            "stepcounter.js"
+            ./"stepcounter.js"
     ],
     "socket": true,
     "version:": "1.0.0",
