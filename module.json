@@ -1,15 +1,14 @@
 {
     "name": "StepCounter",
     "title": "Step Counter",
-    "description": "",
+    "description": "test",
+    "version": "1.0.0",
     "author": "CDeenen",
-    "scripts": [
-            "./stepcounter.js"
-    ],
-    "socket": true,
-    "version:": "1.0.0",
+    "scripts": ["./stepcounter.js"],
+    "packs": [],
+    "minimumCoreVersion": "0.6.6",
     "compatibleCoreVersion": "0.6.6",
     "url": "https://github.com/CDeenen/StepCounter",
     "manifest": "https://github.com/CDeenen/StepCounter/releases/download/v1.0.0/module.json",
     "download": "https://github.com/CDeenen/StepCounter/releases/download/V1.0.0/StepCounter.zip"
-}
+  }
