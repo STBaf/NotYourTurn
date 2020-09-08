@@ -15,9 +15,10 @@ let stepCounterSett;
 function displayBar(token){
     if (stepCounterSett == 0) return;
     let inCombat = false;
-    for (let i=0; i<game.data.combat.length; i++){
-        if (game.data.combat[i].round > 0) inCombat = true;
-    }
+    if (game.combat>0)
+        for (let i=0; i<game.data.combat.length; i++){
+            if (game.data.combat[i].round > 0) inCombat = true;
+        }
     if (inCombat == false && game.settings.get("StepCounter","CombatOnly")==true) return;
 
     let oldBar = document.getElementById("show-action-dropdown-bar");
