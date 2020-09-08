@@ -35,7 +35,7 @@ The operation of the module can be modified in the module settings. Here is an o
 <b>Chat Messages</b> - Creates a chat message whenever a non-gm user either: presses the 'Reset' button, presses the 'Ignore' button, moves a token too far when 'Step Counter' is set to 'Display + Warning', moves a token when it's not their turn and 'Turn Block' is set to 'Warning Only'.<br>
 
 ### Macros
-There are 3 macros included as a compendium:
+There are 3 macros included as a compendium:<br>
 <b>Enable Dash</b> - Enables dash to double the movement speed<br>
 <b>Disable Dash</b> - Disables dash<br>
 <b>Reset Step Counter</b> - Resets the step counter and disables dash<br>
