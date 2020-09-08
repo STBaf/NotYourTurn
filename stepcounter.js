@@ -1,10 +1,5 @@
 /* 
- * Step Counter and Movement Blocker
- *
- * This module adds a step counter, that counts the movement of a token. This allows the user to keep track of their movement, and it can be used to block movement when a token is not supposed to move.
- * 
- * 
- * 
+ * Step Counter
  * Author: Cris#6864
  * The UI is based on the work of kekilla#7036 from his TokenBar module
  * Many thanks to kekilla#7036 and cole#9640 for their help
