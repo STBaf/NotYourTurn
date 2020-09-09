@@ -14,14 +14,14 @@ This dialog box contains the following options:<br>
 <li><b>Ignore</b> - Ignores the step counter (can be disabled)</li>
 <li><b>Request</b> - Request the GM to move the token further</li>
 </ul>
-<br>
+
 Furthermore, if a token is moved when its not the token's turn, a similar dialog box appears containing the following options:<br>
 <ul>
 <li><b>Undo</b> - Same as above</li>
 <li><b>Ignore</b> - Same as above</li>
 <li><b>Request</b> - Same as above</li>
 </ul>
-<br>
+
 If the request button is pressed, a dialog box appears for the GM, with the following options:<br>
 <ul>
 <li><b>Accept</b> - Accepts the movement request</li>
