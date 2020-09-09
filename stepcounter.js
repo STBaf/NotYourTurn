@@ -12,14 +12,18 @@ let role;
 let turnBlockSett;
 let stepCounterSett;
 
-function displayBar(token){
+function checkCombat(){
+    if (typeof game.combat === 'undefined') return false;
+    for (let i=0; i<game.data.combat.length; i++)
+        if (game.data.combat[i].scene == canvas.scene.data._id && game.data.combat[i].active) return true;
+    return false;
+}
+
+function displayBar(token,stepsMoved,dashB){
+    if (stepsMoved < 0) stepsMoved = Math.round(token.getFlag('StepCounter','stepsTaken'));
+    if (dashB < 0) dashB = token.getFlag('StepCounter','dash');
     if (stepCounterSett == 0) return;
-    let inCombat = false;
-    
-    if (typeof game.combat !== 'undefined')
-        for (let i=0; i<game.data.combat.length; i++){
-            if (game.data.combat[i].round > 0) inCombat = true;
-        }
+    let inCombat = checkCombat();
     if (inCombat == false && game.settings.get("StepCounter","CombatOnly")==true) return;
 
     let oldBar = document.getElementById("show-action-dropdown-bar");
@@ -43,9 +47,9 @@ function displayBar(token){
     } else {
         display ="flex";
         let speed = getTokenSpeed(token);
-        let stepsMoved = Math.round(token.getFlag('StepCounter','stepsTaken'));
+        //let stepsMoved = Math.round(token.getFlag('StepCounter','stepsTaken'));
         let dash = "No";
-        if (token.getFlag('StepCounter','dash')) dash = "Yes";
+        if (dashB) dash = "Yes";
         data = ["Moved: " + stepsMoved + "/" + speed + " Ft.   Dash: " + dash];
         targetId = targetActor._id;
     }
@@ -71,11 +75,14 @@ function getTokenSpeed(token){
     return speed;
 }
 
-function setFlags(token, X, Y, steps, dash){
+function setFlags(token, X, Y, steps, dash, diagonal){
     token.setFlag('StepCounter','startCoordinateX', X);
     token.setFlag('StepCounter','startCoordinateY', Y);
     if (steps > -1) token.setFlag('StepCounter','stepsTaken', steps);
     if (dash > -1) token.setFlag('StepCounter','dash',dash);
+    if (diagonal > -1) token.setFlag('StepCounter','diagonal',diagonal);
+    displayBar(token,steps,dash);
+    timerCheck = 0;
     timer = Date.now();
 }
 
@@ -146,6 +153,7 @@ Hooks.on('ready', ()=>{
                         token.setFlag('StepCounter','startCoordinateY', token.data.y);
                         token.setFlag('StepCounter','stepsTaken', payload.stepsTaken);
                         token.setFlag('StepCounter','dash',false);
+                        token.setFlag('StepCounter','diagonal',0);
                         timer = Date.now();
                         ret = true;
                     }
@@ -155,6 +163,7 @@ Hooks.on('ready', ()=>{
                         token.setFlag('StepCounter','startCoordinateX', payload.oldX);
                         token.setFlag('StepCounter','startCoordinateY', payload.oldY);
                         token.setFlag('StepCounter','stepsTaken', token.getFlag('StepCounter','stepsTaken')-payload.stepsTaken);
+                        token.setFlag('StepCounter','diagonal',payload.diagonal);
                         timer = Date.now();
                         ret = false;
                     }
@@ -291,10 +300,11 @@ Hooks.once('init', function(){
     game.settings.register('StepCounter','CombatOnly', {
         name: "Combat Only",
         hint: "Only enable the step counter during combat",
-        scope: "world",
+        scope: "global",
         config: true,
         default: true,
-        type: Boolean
+        type: Boolean,
+        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','AutoReset', {
         name: "Auto Reset",
@@ -341,10 +351,7 @@ Hooks.on("updateCombat", (combat, updateData, otherData, userId) => {
         let token;
         if (canvas.tokens.children[0].children[i].data._id == combat.current.tokenId) {
             token = canvas.tokens.children[0].children[i];
-            token.setFlag('StepCounter','startCoordinateX', token.data.x);
-            token.setFlag('StepCounter','startCoordinateY', token.data.y);
-            token.setFlag('StepCounter','stepsTaken', 0);
-            token.setFlag('StepCounter','dash',false);
+            setFlags(token, token.data.x, token.data.y, 0, false, 0);
         }
     }
 });
@@ -357,32 +364,31 @@ Hooks.on("deleteCombat", (combat, id, options) => {
 });
 
 Hooks.on('controlToken', (token,controlled)=>{
-    displayBar(token);
+    displayBar(token,-1,-1);
 });
 
 Hooks.on('controlToken', (token,controlled)=>{
     if (token._controlled == false) return;
+    if(token.data.flags["StepCounter"]){}
+    else setFlags(token, token.data.x, token.data.y, 0, false, 0);
     token.setFlag('StepCounter','startCoordinateX', token.data.x);
     token.setFlag('StepCounter','startCoordinateY', token.data.y);
+    console.log(token.data.flags.StepCounter);
 
     Hooks.on('updateToken',(a,b,c,d,user)=>{
+        //To prevent the dialog from appearing multiple times, set a timer
+        if (Date.now() - timer < 200 || timerCheck == 1) 
+            return;
+        
+        timer = Date.now();
+
         if (token._controlled == false) return;
         if (user != game.userId) return;
         
         //Check if combat is currently going on. Do not continue if not
-        let inCombat = false;
-        if (typeof game.combat !== 'undefined')
-            for (let i=0; i<game.data.combat.length; i++){
-                if (game.data.combat[i].round > 0) inCombat = true;
-            }
+        let inCombat = checkCombat();
         if (inCombat == false && game.settings.get("StepCounter","CombatOnly")==true) return;
-        
-        //To prevent the dialog from appearing multiple times, set a timer
-        if (Date.now() - timer > 50) {
-            timerCheck = 0;
-            timer = Date.now();
-        }
-
+    
         //Calculate the steps taken in the X and Y direction by comparing the current position to the previous position. Divide by canvas.dimensions.size to get grid boxes
         let currentPositionX = token.data.x;
         let currentPositionY = token.data.y;
@@ -390,7 +396,8 @@ Hooks.on('controlToken', (token,controlled)=>{
         let oldPositionY = token.getFlag('StepCounter','startCoordinateY');
         let stepsTakenX = Math.abs(oldPositionX - currentPositionX)/canvas.dimensions.size; 
         let stepsTakenY = Math.abs(oldPositionY - currentPositionY)/canvas.dimensions.size;
-        
+        let diagonal = token.getFlag('StepCounter','diagonal');
+
         //Check what kind of diagonal movement rules are being used.
         let stepsTaken = 0;
         let diagonalMovement = game.settings.get("dnd5e","diagonalMovement");
@@ -399,6 +406,35 @@ Hooks.on('controlToken', (token,controlled)=>{
         if (diagonalMovement == "555"){
             stepsTaken = stepsTakenX;
             if (stepsTakenY > stepsTaken) stepsTaken = stepsTakenY;
+            console.log("StepsTaken: "+stepsTaken);
+        }
+        //Variant rules: Alternating 5/10/5 ft. for diagonal movement
+        else if (diagonalMovement == "5105"){
+            
+            let diagonalSteps = 0;
+            let remainder = 0;
+            if (stepsTakenX == stepsTakenY) diagonalSteps = stepsTakenX;
+            else if (stepsTakenX > stepsTakenY) {
+                diagonalSteps = stepsTakenY;
+                remainder = stepsTakenX - stepsTakenY;
+            }
+            else if (stepsTakenX < stepsTakenY) {
+                diagonalSteps = stepsTakenX;
+                remainder = stepsTakenY - stepsTakenX;
+            }
+            stepsTaken = remainder;
+            if (diagonalSteps%2 == 0){//even diagonal steps
+                stepsTaken += (diagonalSteps/2)*3;
+                diagonal = 0;
+            }
+            else {//uneven diagonal steps
+                let evenSteps = Math.floor(diagonalSteps/2);
+                diagonalSteps += evenSteps + diagonal;
+                stepsTaken += diagonalSteps;
+                if (diagonal == 0) diagonal = 1;
+                else diagonal = 0;
+            }
+            console.log("StepsTaken: "+stepsTaken+" StepsX: "+stepsTakenX+" StepsY: "+stepsTakenY+" DiagSt: "+diagonalSteps+" Diag: "+diagonal+" Rem: "+remainder);
         }
         //Euclidian rules: use pythagorean theorem to calculate the distance
         else if (diagonalMovement = "EUCL") stepsTaken = Math.sqrt(stepsTakenX * stepsTakenX + stepsTakenY * stepsTakenY);
@@ -407,7 +443,8 @@ Hooks.on('controlToken', (token,controlled)=>{
         stepsTaken *= canvas.dimensions.distance;
         
         //If the token has moved, and timerCheck is 0, continue
-        if (stepsTaken > 0 && timerCheck == 0){
+        if (stepsTaken > 0){
+            timerCheck = 1;
             //set timerCheck to 1, get the speed of the token, get the amount of steps the token has already moved
             timerCheck = 1;
             let speed = getTokenSpeed(token);
@@ -423,17 +460,20 @@ Hooks.on('controlToken', (token,controlled)=>{
                 //Check if autoblock applies, which will automatically force the token back to its original position
                 if (stepCounterSett == 4 || turnBlock && turnBlockSett == 3){
                     token.shiftPosition((oldPositionX - currentPositionX)/canvas.dimensions.size,(oldPositionY - currentPositionY)/canvas.dimensions.size,true);
-                    setFlags(token, oldPositionX, oldPositionY, -1, -1);
+                    setFlags(token, oldPositionX, oldPositionY, -1, -1, -1);
                     if (turnBlock) ui.notifications.warn("It is not your turn"); 
                     else ui.notifications.warn("You cannot move more than your speed allows"); 
                     timer = Date.now();
                 }
                 //Check if 'display only' is set for 'disable', if so, continue movement
-                else if (turnBlock == false && stepCounterSett == 0) {}
+                else if (turnBlock == false && stepCounterSett == 0) {
+                    totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
+                    setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
+                }
                 //Check if 'display only' is set for 'enable', if so, continue movement
                 else if (turnBlock == false && stepCounterSett == 1) {
                     totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
-                    setFlags(token, token.data.x, token.data.y, totalSteps, -1);
+                    setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
                     if (game.settings.get("StepCounter","ChatMessages")==true && role < 3) {
                         let dash = "No";
                         if (token.getFlag('StepCounter','dash')) dash = "Yes";
@@ -443,7 +483,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                 //Check if 'display + warning' is set for 'enable', if so, continue movement and give warning
                 else if (turnBlock == false && stepCounterSett ==2){
                     totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
-                    setFlags(token, token.data.x, token.data.y, totalSteps, -1);              
+                    setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);              
                     ui.notifications.warn("You moved more than your speed allows"); 
                     if (game.settings.get("StepCounter","ChatMessages")==true && role < 3) {
                         let dash = "No";
@@ -454,7 +494,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                 //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
                 else if (turnBlock && turnBlockSett == 1){
                     totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
-                    setFlags(token, token.data.x, token.data.y, totalSteps, -1);
+                    setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
                     ui.notifications.warn("It is not your turn");
                     if (game.settings.get("StepCounter","ChatMessages")==true && role < 3) 
                         whisperGM(token.name + " moved when it was not its turn");
@@ -514,12 +554,12 @@ Hooks.on('controlToken', (token,controlled)=>{
                             //If 'Undo' is pressed, move token back to previous position
                             if (applyChanges == 0){ //undo
                                 token.shiftPosition((oldPositionX - currentPositionX)/canvas.dimensions.size,(oldPositionY - currentPositionY)/canvas.dimensions.size,true);
-                                setFlags(token, oldPositionX, oldPositionY, -1, -1);
+                                setFlags(token, oldPositionX, oldPositionY, -1, -1, -1);
                             }
                             //if 'Dash' is pressed, apply dash and continue movement
                             else if (applyChanges == 1) { //dash
                                 totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
-                                setFlags(token, token.data.x, token.data.y, totalSteps, true);
+                                setFlags(token, token.data.x, token.data.y, totalSteps, true, diagonal);
                                 if (game.settings.get("StepCounter","ChatMessages")==true) 
                                     whisperGM(token.name + " used dash.");
                             }
@@ -531,7 +571,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                                     if (token.getFlag('StepCounter','dash')) dash = "Yes";
                                     whisperGM(token.name + "'s step counter was reset<br>Moved: " + totalSteps + "/" + speed + " Ft.<br>Dash: " + dash);
                                 }
-                                setFlags(token, token.data.x, token.data.y, stepsTaken, false);
+                                setFlags(token, token.data.x, token.data.y, stepsTaken, false, 0);
                             }
                             //If 'Ignore' is pressed, continue movement
                             else if (applyChanges == 3) { //ignore
@@ -544,12 +584,12 @@ Hooks.on('controlToken', (token,controlled)=>{
                                     else if (turnBlock == true) 
                                         whisperGM(token.name + " moved outside his/her turn");                                                                                    
                                 }
-                                setFlags(token, token.data.x, token.data.y, totalSteps, -1);
+                                setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
                             }  
                             else if (applyChanges == 4) { //request movement
                                 //Request movement from GM, then apply movement (GM can undo this)
                                 totalSteps = token.getFlag('StepCounter','stepsTaken') + stepsTaken;
-                                setFlags(token, token.data.x, token.data.y, totalSteps, -1);
+                                setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
                                 for (let i=0; i<game.data.users.length; i++)
                                     if (game.data.users[i].role > 2) {
                                         let msgType = "requestMovement_tooMuch";
@@ -561,7 +601,8 @@ Hooks.on('controlToken', (token,controlled)=>{
                                             "tokenId": token.data._id,
                                             "oldX": oldPositionX,
                                             "oldY": oldPositionY,
-                                            "stepsTaken": stepsTaken
+                                            "stepsTaken": stepsTaken,
+                                            "diagonal": token.getFlag('StepCounter','diagonal')
                                         };
                                         game.socket.emit(`module.StepCounter`, payload);
                                     }
@@ -572,12 +613,16 @@ Hooks.on('controlToken', (token,controlled)=>{
                 }               
             }
             else {
+                console.log("ok");
                 totalSteps += stepsTaken;
-                setFlags(token, token.data.x, token.data.y, -1, -1);
+                setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
+                //displayBar(token,totalSteps,-1);
+                //totalSteps += stepsTaken;
+                //setFlags(token, token.data.x, token.data.y, -1, -1, -1);
             }
-            token.setFlag('StepCounter','stepsTaken', totalSteps);
+            //token.setFlag('StepCounter','stepsTaken', totalSteps);
         }
-        displayBar(token);
+        //displayBar(token,-1,-1);
         timer = Date.now();
     })
 })
