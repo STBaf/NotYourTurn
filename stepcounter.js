@@ -373,7 +373,6 @@ Hooks.on('controlToken', (token,controlled)=>{
     else setFlags(token, token.data.x, token.data.y, 0, false, 0);
     token.setFlag('StepCounter','startCoordinateX', token.data.x);
     token.setFlag('StepCounter','startCoordinateY', token.data.y);
-    console.log(token.data.flags.StepCounter);
 
     Hooks.on('updateToken',(a,b,c,d,user)=>{
         //To prevent the dialog from appearing multiple times, set a timer
@@ -406,7 +405,6 @@ Hooks.on('controlToken', (token,controlled)=>{
         if (diagonalMovement == "555"){
             stepsTaken = stepsTakenX;
             if (stepsTakenY > stepsTaken) stepsTaken = stepsTakenY;
-            console.log("StepsTaken: "+stepsTaken);
         }
         //Variant rules: Alternating 5/10/5 ft. for diagonal movement
         else if (diagonalMovement == "5105"){
@@ -434,7 +432,6 @@ Hooks.on('controlToken', (token,controlled)=>{
                 if (diagonal == 0) diagonal = 1;
                 else diagonal = 0;
             }
-            console.log("StepsTaken: "+stepsTaken+" StepsX: "+stepsTakenX+" StepsY: "+stepsTakenY+" DiagSt: "+diagonalSteps+" Diag: "+diagonal+" Rem: "+remainder);
         }
         //Euclidian rules: use pythagorean theorem to calculate the distance
         else if (diagonalMovement = "EUCL") stepsTaken = Math.sqrt(stepsTakenX * stepsTakenX + stepsTakenY * stepsTakenY);
@@ -613,16 +610,10 @@ Hooks.on('controlToken', (token,controlled)=>{
                 }               
             }
             else {
-                console.log("ok");
                 totalSteps += stepsTaken;
                 setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
-                //displayBar(token,totalSteps,-1);
-                //totalSteps += stepsTaken;
-                //setFlags(token, token.data.x, token.data.y, -1, -1, -1);
             }
-            //token.setFlag('StepCounter','stepsTaken', totalSteps);
         }
-        //displayBar(token,-1,-1);
         timer = Date.now();
     })
 })
