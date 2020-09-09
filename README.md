@@ -54,5 +54,5 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 <b>Special Thanks:</b> Many thanks to kekilla#7036 and cole#9640 for their help<br>
 
 ## Changelog
-<b>v1.0.0</b> - 08-09-2020 - Initial release
-<b>v1.0.1</b> - 09-09-2020 - Minor bug fixes and added 5/10/5 diagonal movement calculations
+<b>v1.0.0</b> - 08-09-2020 - Initial release<br>
+<b>v1.0.1</b> - 09-09-2020 - Minor bug fixes and added 5/10/5 diagonal movement calculations<br>
