@@ -20,7 +20,8 @@ function checkCombat(){
 }
 
 function displayBar(token,stepsMoved,dashB){
-    if (stepsMoved < 0) stepsMoved = Math.round(token.getFlag('StepCounter','stepsTaken'));
+    if (stepsMoved < 0) stepsMoved = token.getFlag('StepCounter','stepsTaken');
+    stepsMoved = Math.round(stepsMoved);
     if (dashB < 0) dashB = token.getFlag('StepCounter','dash');
     if (stepCounterSett == 0) return;
     let inCombat = checkCombat();
@@ -182,6 +183,7 @@ Hooks.on('ready', ()=>{
         else if (payload.msgType == "requestMovement_GMack"){
             if (payload.ret == true) ui.notifications.info("The GM has granted your request");
             else ui.notifications.warn("The GM has declined your request");
+            disableMoveKeys(false);
         }
     });
 });
@@ -345,14 +347,68 @@ Hooks.once('init', function(){
     }
 });
 
+let moveKeysOld;
+function disableMoveKeys(enable){
+    moveKeysOld = game.keyboard.moveKeys;
+    if (enable){
+        game.keyboard.moveKeys.w = "";
+        game.keyboard.moveKeys.a = "";
+        game.keyboard.moveKeys.s = "";
+        game.keyboard.moveKeys.d = "";
+        game.keyboard.moveKeys.W = "";
+        game.keyboard.moveKeys.A = "";
+        game.keyboard.moveKeys.S = "";
+        game.keyboard.moveKeys.D = "";
+        game.keyboard.moveKeys.ArrowUp = "";
+        game.keyboard.moveKeys.ArrowRight = "";
+        game.keyboard.moveKeys.ArrowDown = "";
+        game.keyboard.moveKeys.ArrowLeft = "";
+        game.keyboard.moveKeys.Numpad1 = "";
+        game.keyboard.moveKeys.Numpad2 = "";
+        game.keyboard.moveKeys.Numpad3 = "";
+        game.keyboard.moveKeys.Numpad4 = "";
+        game.keyboard.moveKeys.Numpad6 = "";
+        game.keyboard.moveKeys.Numpad7 = "";
+        game.keyboard.moveKeys.Numpad8 = "";
+        game.keyboard.moveKeys.Numpad9 = "";
+    }
+    else {
+        game.keyboard.moveKeys.w = ["up"];
+        game.keyboard.moveKeys.s = ["down"];
+        game.keyboard.moveKeys.a = ["left"];
+        game.keyboard.moveKeys.d = ["right"];
+        game.keyboard.moveKeys.W = ["up"];
+        game.keyboard.moveKeys.S = ["down"];
+        game.keyboard.moveKeys.A = ["left"];
+        game.keyboard.moveKeys.D = ["right"];
+        game.keyboard.moveKeys.ArrowUp = ["up"];
+        game.keyboard.moveKeys.ArrowRight = ["right"];
+        game.keyboard.moveKeys.ArrowDown = ["down"];
+        game.keyboard.moveKeys.ArrowLeft = ["left"];
+        game.keyboard.moveKeys.Numpad1 = ["down","left"];
+        game.keyboard.moveKeys.Numpad2 = ["down"];
+        game.keyboard.moveKeys.Numpad3 = ["down","right"];
+        game.keyboard.moveKeys.Numpad4 = ["left"];
+        game.keyboard.moveKeys.Numpad6 = ["right"];
+        game.keyboard.moveKeys.Numpad7 = ["up","left"];
+        game.keyboard.moveKeys.Numpad8 = ["up"];
+        game.keyboard.moveKeys.Numpad9 = ["up","right"];
+    }   
+}
+
 Hooks.on("updateCombat", (combat, updateData, otherData, userId) => {
-    if (game.settings.get("StepCounter","AutoReset")==false || role < 3) return;
-    for (let i=0; i<canvas.tokens.children[0].children.length; i++){
-        let token;
-        if (canvas.tokens.children[0].children[i].data._id == combat.current.tokenId) {
-            token = canvas.tokens.children[0].children[i];
-            setFlags(token, token.data.x, token.data.y, 0, false, 0);
+    if (game.settings.get("StepCounter","AutoReset") && role > 2){
+        for (let i=0; i<canvas.tokens.children[0].children.length; i++){
+            let token;
+            if (canvas.tokens.children[0].children[i].data._id == combat.current.tokenId) {
+                token = canvas.tokens.children[0].children[i];
+                setFlags(token, token.data.x, token.data.y, 0, false, 0);
+            }
         }
+    }
+    if (canvas.tokens.controlled.length > 0) {
+        if (canvas.tokens.controlled[0].data._id == combat.current.tokenId)
+            displayBar(canvas.tokens.controlled[0],0,0);
     }
 });
 
@@ -368,7 +424,13 @@ Hooks.on('controlToken', (token,controlled)=>{
 });
 
 Hooks.on('controlToken', (token,controlled)=>{
-    if (token._controlled == false) return;
+    if (token._controlled == false) {
+        disableMoveKeys(false);
+        let oldBar = document.getElementById("show-action-dropdown-bar");
+        if (oldBar != null)
+            oldBar.remove();
+        return;
+    }
     if(token.data.flags["StepCounter"]){}
     else setFlags(token, token.data.x, token.data.y, 0, false, 0);
     token.setFlag('StepCounter','startCoordinateX', token.data.x);
@@ -498,6 +560,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                 }
                 //In all other cases, create a dialog box
                 else {
+                    disableMoveKeys(true);
                     //Create a dialog, with buttons based on the current situation
                     let applyChanges = 0;
                     let buttons = {
@@ -552,6 +615,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                             if (applyChanges == 0){ //undo
                                 token.shiftPosition((oldPositionX - currentPositionX)/canvas.dimensions.size,(oldPositionY - currentPositionY)/canvas.dimensions.size,true);
                                 setFlags(token, oldPositionX, oldPositionY, -1, -1, -1);
+                                disableMoveKeys(false);
                             }
                             //if 'Dash' is pressed, apply dash and continue movement
                             else if (applyChanges == 1) { //dash
@@ -559,6 +623,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                                 setFlags(token, token.data.x, token.data.y, totalSteps, true, diagonal);
                                 if (game.settings.get("StepCounter","ChatMessages")==true) 
                                     whisperGM(token.name + " used dash.");
+                                disableMoveKeys(false);
                             }
                             //If 'Reset' is pressed, reset step counter and continue movement
                             else if (applyChanges == 2){ //reset
@@ -569,6 +634,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                                     whisperGM(token.name + "'s step counter was reset<br>Moved: " + totalSteps + "/" + speed + " Ft.<br>Dash: " + dash);
                                 }
                                 setFlags(token, token.data.x, token.data.y, stepsTaken, false, 0);
+                                disableMoveKeys(false);
                             }
                             //If 'Ignore' is pressed, continue movement
                             else if (applyChanges == 3) { //ignore
@@ -582,6 +648,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                                         whisperGM(token.name + " moved outside his/her turn");                                                                                    
                                 }
                                 setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
+                                disableMoveKeys(false);
                             }  
                             else if (applyChanges == 4) { //request movement
                                 //Request movement from GM, then apply movement (GM can undo this)
@@ -613,6 +680,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                 totalSteps += stepsTaken;
                 setFlags(token, token.data.x, token.data.y, totalSteps, -1, diagonal);
             }
+            //displayBar(token,-1,-1);
         }
         timer = Date.now();
     })

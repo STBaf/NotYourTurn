@@ -6,6 +6,7 @@
     "author": "CDeenen",
     "systems": ["dnd5e"],
     "scripts": ["stepcounter.js"],
+    "socket": true,
     "packs": [
         {
             "name": "stepCounter",
