@@ -13,10 +13,9 @@ let turnBlockSett;
 let stepCounterSett;
 
 function checkCombat(){
-    if (typeof game.combat === 'undefined') return false;
-    for (let i=0; i<game.data.combat.length; i++)
-        if (game.data.combat[i].scene == canvas.scene.data._id && game.data.combat[i].active) return true;
-    return false;
+    if (game.combat) 
+        return game.combat.data.active;
+    else return false; 
 }
 
 function displayBar(token,stepsMoved,dashB){
@@ -25,7 +24,7 @@ function displayBar(token,stepsMoved,dashB){
     if (dashB < 0) dashB = token.getFlag('StepCounter','dash');
     if (stepCounterSett == 0) return;
     let inCombat = checkCombat();
-    if (inCombat == false && game.settings.get("StepCounter","CombatOnly")==true) return;
+    if (inCombat == false && game.settings.get('StepCounter','CombatOnly')==true) return;
 
     let oldBar = document.getElementById("show-action-dropdown-bar");
     if (oldBar != null)
@@ -134,7 +133,7 @@ Hooks.on('ready', ()=>{
                 callback: () => applyChanges = 2
             }
             
-            let content =  `Player '` + user + `' has requested extra movement for token '` + token.data.name + `':<br><br>Moved: ` + token.getFlag('StepCounter','stepsTaken') + ` Ft.<br>Speed: `+ getTokenSpeed(token) + ` Ft.<br>Dash: ` + dash + `<br><br>`;
+            let content =  `Player '` + user + `' has requested extra movement for token '` + token.data.name + `':<br><br>Moved: ` + payload.totalSteps + ` Ft.<br>Speed: `+ getTokenSpeed(token) + ` Ft.<br>Dash: ` + dash + `<br><br>`;
             if (payload.msgType == "requestMovement_noTurn") content = `Player '` + user + `' has requested to move '` + token.data.name + `' outside his/her turn`;
             let d = new Dialog({
                 title: `Movement request`,
@@ -198,7 +197,6 @@ Hooks.once('init', function(){
         type:Number,
         default:2,
         choices:["Off","Warning Only","Dialog Box","Auto Block"],
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','TurnBlockTrusted', {
         name: "Turn Block (Trusted)",
@@ -208,7 +206,6 @@ Hooks.once('init', function(){
         type:Number,
         default:2,
         choices:["Off","Warning Only","Dialog Box","Auto Block"],
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','TurnBlockAssistant', {
         name: "Turn Block (Assistant)",
@@ -218,7 +215,6 @@ Hooks.once('init', function(){
         type:Number,
         default:1,
         choices:["Off","Warning Only","Dialog Box","Autoblock"],
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','TurnBlockGM', {
         name: "Turn Block (GM)",
@@ -228,7 +224,6 @@ Hooks.once('init', function(){
         type:Number,
         default:1,
         choices:["Off","Warning Only","Dialog Box","Auto Block"],
-        onChange: x => window.location.reload()
     });
 
 
@@ -240,7 +235,6 @@ Hooks.once('init', function(){
         type:Number,
         default:3,
         choices:["Off","Display Only","Display + Warning","Display + Dialog Box","Display + Auto Block"], 
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','EnableTrusted', {
         name: "Step Counter (Trusted)",
@@ -250,7 +244,6 @@ Hooks.once('init', function(){
         type:Number,
         default:3,
         choices:["Off","Display Only","Display + Warning","Display + Dialog Box","Display + Auto Block"], 
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','EnableAssistant', {
         name: "Step Counter (Assistant)",
@@ -260,7 +253,6 @@ Hooks.once('init', function(){
         type:Number,
         default:2,
         choices:["Off","Display Only","Display + Warning","Display + Dialog Box","Display + Auto Block"], 
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','EnableGM', {
         name: "Step Counter (GM)",
@@ -270,7 +262,6 @@ Hooks.once('init', function(){
         type:Number,
         default:2,
         choices:["Off","Display Only","Display + Warning","Display + Dialog Box","Display + Auto Block"], 
-        onChange: x => window.location.reload()
     });
     
     game.settings.register('StepCounter','ResetButton', {
@@ -302,11 +293,10 @@ Hooks.once('init', function(){
     game.settings.register('StepCounter','CombatOnly', {
         name: "Combat Only",
         hint: "Only enable the step counter during combat",
-        scope: "global",
+        scope: "world",
         config: true,
         default: true,
         type: Boolean,
-        onChange: x => window.location.reload()
     });
     game.settings.register('StepCounter','AutoReset', {
         name: "Auto Reset",
@@ -413,7 +403,7 @@ Hooks.on("updateCombat", (combat, updateData, otherData, userId) => {
 });
 
 Hooks.on("deleteCombat", (combat, id, options) => {
-    if (game.settings.get("StepCounter","CombatOnly")==false) return;
+    if (game.settings.get('StepCounter','CombatOnly')==false) return;
     let oldBar = document.getElementById("show-action-dropdown-bar");
     if (oldBar != null)
         oldBar.remove();
@@ -424,7 +414,7 @@ Hooks.on('controlToken', (token,controlled)=>{
 });
 
 Hooks.on('controlToken', (token,controlled)=>{
-    if (token._controlled == false) {
+    if (controlled == false) {
         disableMoveKeys(false);
         let oldBar = document.getElementById("show-action-dropdown-bar");
         if (oldBar != null)
@@ -448,8 +438,9 @@ Hooks.on('controlToken', (token,controlled)=>{
         
         //Check if combat is currently going on. Do not continue if not
         let inCombat = checkCombat();
-        if (inCombat == false && game.settings.get("StepCounter","CombatOnly")==true) return;
-    
+
+        if (inCombat == false && game.settings.get('StepCounter','CombatOnly')==true) return;
+
         //Calculate the steps taken in the X and Y direction by comparing the current position to the previous position. Divide by canvas.dimensions.size to get grid boxes
         let currentPositionX = token.data.x;
         let currentPositionY = token.data.y;
@@ -500,7 +491,7 @@ Hooks.on('controlToken', (token,controlled)=>{
         
         //Multiply by the canvas.dimensions.distance to get feet
         stepsTaken *= canvas.dimensions.distance;
-        
+
         //If the token has moved, and timerCheck is 0, continue
         if (stepsTaken > 0){
             timerCheck = 1;
@@ -508,12 +499,13 @@ Hooks.on('controlToken', (token,controlled)=>{
             timerCheck = 1;
             let speed = getTokenSpeed(token);
             let totalSteps = token.getFlag('StepCounter','stepsTaken');
-
+            
             let turnBlock = false;
             if (turnBlockSett>0 && inCombat)
-                if (token.data._id != game.combat.current.tokenId) 
-                    turnBlock = true;
-            
+                for (let i=0; i<game.combat.data.combatants.length; i++)
+                    if (game.combat.data.combatants[i].tokenId == token.data._id)
+                        turnBlock = !game.combat.data.combatants[i].active;
+
             //Check if the previous movement + new movement is bigger than the token's speed. Or if the token is moved when its not their turn
             if (Math.round(stepsTaken + token.getFlag('StepCounter','stepsTaken'))>speed || turnBlock) {
                 //Check if autoblock applies, which will automatically force the token back to its original position
@@ -666,6 +658,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                                             "oldX": oldPositionX,
                                             "oldY": oldPositionY,
                                             "stepsTaken": stepsTaken,
+                                            "totalSteps": Math.floor(totalSteps),
                                             "diagonal": token.getFlag('StepCounter','diagonal')
                                         };
                                         game.socket.emit(`module.StepCounter`, payload);
