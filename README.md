@@ -33,7 +33,7 @@ The operation of the module can be modified in the module settings. Here is an o
 <li><b>GM Request Button</b> - Adds or removes the 'Request' button (it is not needed if players have access to the 'Ignore' button)</li>
 <li><b>Chat Messages</b> - Creates a chat message whenever a non-gm user either: presses the 'Ignore' button, or moves a token when it's not their turn and 'Turn Block' is set to 'Warning Only'</li>
 </ul>
-![dialog](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/Settings.png)
+![dialog](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 ### Limitations/Issues
 <ul>
 <li>Currently, the module only works if one token is moved at a time. Expect weird behaviour if 'Autoblock' is on, and multiple tokens are moved</li>
