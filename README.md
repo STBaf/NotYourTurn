@@ -4,10 +4,10 @@
 ### Operation
 If a player moves a token when it's not the token's turn one of a few things can happen, depending on the settings:
 <ul>
-<li><b>Off</b>Nothing, the token can continue moving</li>
-<li><b>Warning</b>A warning is given, but the token can continue moving</li>
-<li><b>Dialog</b>A dialog box appears</li>
-<li><b>Autoblock</b>The token is automatically blocked from moving</li>
+<li><b>Off</b> - Nothing, the token can continue moving</li>
+<li><b>Warning</b> - A warning is given, but the token can continue moving</li>
+<li><b>Dialog</b> - A dialog box appears</li>
+<li><b>Autoblock</b> - The token is automatically blocked from moving</li>
 </ul>
 
 The dialog box contains the following options:<br>
