@@ -53,6 +53,3 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 
 ## Credits
 <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
-
-## Changelog
-<b>v1.0.0</b> - 13-09-2020 - Initial release<br>
