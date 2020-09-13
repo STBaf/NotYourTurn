@@ -65,7 +65,7 @@ Hooks.on('ready', ()=>{
             
             let d = new Dialog({
                 title: `Movement request`,
-                content: `Player '` + user + `' has requested to move '` + token.data.name,
+                content: `Player '` + user + `' has requested to move token '` + token.data.name+ "'",
                 buttons,
                 default: "Decline",
                 close: html => {
@@ -232,7 +232,7 @@ Hooks.on('controlToken', (token,controlled)=>{
     if (controlled == false) return;
     oldPositionX = token.data.x;
     oldPositionY = token.data.y;
-    
+    console.log(token);
     Hooks.on('updateToken',(scene,data,c,d,user)=>{
         if (blockSett == 0) return;
         
