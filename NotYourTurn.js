@@ -13,7 +13,7 @@ let oldPositionY;
 
 function checkCombat(){
     if (game.combat) 
-        return game.combat.data.active;
+        return game.combat.started;
     else return false; 
 }
 
@@ -60,7 +60,7 @@ Hooks.on('ready', ()=>{
             //Decline button, declines the request
             buttons.Decline = {
                 label: `Decline`,
-                callback: () => applyChanges = 2
+                callback: () => applyChanges = 1
             }
             
             let d = new Dialog({
@@ -69,25 +69,16 @@ Hooks.on('ready', ()=>{
                 buttons,
                 default: "Decline",
                 close: html => {
-                    //If 'Accept' is pressed, do nothing (accepts the movement)
                     let ret;
-                    if (applyChanges == 0){
-                        timer = Date.now();
-                        ret = true;
-                    }
-                    //If 'Decline' is pressed, move token back to old location
-                    else if (applyChanges == 2) { //Reject
-                        token.shiftPosition((payload.oldX - token.data.x)/canvas.dimensions.size,(payload.oldY - token.data.y)/canvas.dimensions.size,true);
-                        timer = Date.now();
-                        ret = false;
-                    }
+                    if (applyChanges == 0) ret = true;
+                    else if (applyChanges == 1) ret = false;
                     let payload2 = {
                         "msgType": "requestMovement_GMack",
                         "sender": game.userId, 
                         "receiver": payload.sender, 
-                        "tokenId": token.data._id,
-                        "oldX": payload.oldX,
-                        "oldY": payload.oldY,
+                        "tokenId": payload.tokenId,
+                        "shiftX": payload.shiftX,
+                        "shiftY": payload.shiftY,
                         ret
                     };
                     game.socket.emit(`module.NotYourTurn`, payload2);
@@ -106,11 +97,15 @@ Hooks.on('ready', ()=>{
             }
             else {
                 ui.notifications.warn("The GM has declined your request");
-                oldPositionX = payload.oldX;
-                oldPositionY = payload.oldY;
+                token.shiftPosition(payload.shiftX,payload.shiftY,true);
+                oldPositionX = token.data.x + payload.shiftX*canvas.dimensions.size;
+                oldPositionY = token.data.y + payload.shiftY*canvas.dimensions.size;
             }
+            //let shiftY = (oldPositionY - data.y)/canvas.dimensions.size;
+            
             disableMoveKeys(false);
             duplicateCheck = false;
+            timer = Date.now();
             
         }
     });
@@ -343,6 +338,8 @@ Hooks.on('controlToken', (token,controlled)=>{
                     }  
                     else if (applyChanges == 2) { //request movement
                         //Request movement from GM, then apply movement (GM can undo this)
+                        let shiftX = (oldPositionX - data.x)/canvas.dimensions.size;
+                        let shiftY = (oldPositionY - data.y)/canvas.dimensions.size;
                         for (let i=0; i<game.data.users.length; i++)
                             if (game.data.users[i].role > 2) {
                                 let payload = {
@@ -350,8 +347,8 @@ Hooks.on('controlToken', (token,controlled)=>{
                                     "sender": game.userId, 
                                     "receiver": game.data.users[i]._id, 
                                     "tokenId": token.data._id,
-                                    "oldX": oldPositionX,
-                                    "oldY": oldPositionY
+                                    "shiftX": shiftX,
+                                    "shiftY": shiftY
                                 };
                                 game.socket.emit(`module.NotYourTurn`, payload);
                             }
