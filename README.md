@@ -1,5 +1,5 @@
 # Not Your Turn
-'Not Your Turn' is a <a href="https://foundryvtt.com/">Foundry VTT</a> module that prevents tokens from moving when it's not their turn in combat.
+'Not Your Turn' is a <a href="https://foundryvtt.com/">Foundry VTT</a> module that prevents tokens from moving when it's not their turn in combat.<br>
 <b>Please note: at the moment the module only works when trying to move one token at a time. Moving multiple tokens might cause unexpected behaviour. This will hopefully be fixed in the next update.</b>
 
 ### Operation
