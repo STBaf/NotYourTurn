@@ -53,19 +53,19 @@ Hooks.on('ready', ()=>{
             let buttons = {
             //Accept button, accepts the request
                 Accept: {
-                    label: `Accept`,
+                    label: game.i18n.localize("NotYourTurn.Request_AcceptBtn"),
                     callback: () => applyChanges = 0
                 }
             }
             //Decline button, declines the request
             buttons.Decline = {
-                label: `Decline`,
+                label: game.i18n.localize("NotYourTurn.Request_DeclineBtn"),
                 callback: () => applyChanges = 1
             }
             
             let d = new Dialog({
-                title: `Movement request`,
-                content: `Player '` + user + `' has requested to move token '` + token.data.name+ "'",
+                title: game.i18n.localize("NotYourTurn.Request_Title"),
+                content: game.i18n.localize("NotYourTurn.Request_Text1") + user + game.i18n.localize("NotYourTurn.Request_Text2") + token.data.name+ "'",
                 buttons,
                 default: "Decline",
                 close: html => {
@@ -91,12 +91,12 @@ Hooks.on('ready', ()=>{
                 for (let i=0; i<canvas.tokens.children[0].children.length; i++)
                     if (canvas.tokens.children[0].children[i].data._id == payload.tokenId) token = canvas.tokens.children[0].children[i];
             if (payload.ret == true) {
-                ui.notifications.info("The GM has granted your request");
+                ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted"));
                 oldPositionX = token.data.x;
                 oldPositionY = token.data.y;
             }
             else {
-                ui.notifications.warn("The GM has declined your request");
+                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
                 token.shiftPosition(payload.shiftX,payload.shiftY,true);
                 oldPositionX = token.data.x + payload.shiftX*canvas.dimensions.size;
                 oldPositionY = token.data.y + payload.shiftY*canvas.dimensions.size;
@@ -112,58 +112,59 @@ Hooks.on('ready', ()=>{
 });
 
 Hooks.once('init', function(){
+
     //initialize all settings
     game.settings.register('NotYourTurn','BlockPlayer', {
-        name: "Player",
+        name: "NotYourTurn.Player",
         scope: "world",
         config: true,
         type:Number,
         default:2,
-        choices:["Off","Warning Only","Dialog Box","Auto Block"],
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
         onChange: x => window.location.reload()
     });
     game.settings.register('NotYourTurn','BlockTrusted', {
-        name: "Trusted",
+        name: "NotYourTurn.Trusted",
         scope: "world",
         config: true,
         type:Number,
         default:2,
-        choices:["Off","Warning Only","Dialog Box","Auto Block"],
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
         onChange: x => window.location.reload()
     });
     game.settings.register('NotYourTurn','BlockAssistant', {
-        name: "Assistant",
+        name: "NotYourTurn.Assistant",
         scope: "world",
         config: true,
         type:Number,
         default:1,
-        choices:["Off","Warning Only","Dialog Box","Autoblock"],
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
         onChange: x => window.location.reload()
     });
     game.settings.register('NotYourTurn','BlockGM', {
-        name: "GM",
-        hint: "Determines behavior when token is moved when its not its turn for each permission level",
+        name: "NotYourTurn.Gamemaster",
+        hint: "NotYourTurn.Mode_Hint",
         scope: "world",
         config: true,
         type:Number,
         default:1,
-        choices:["Off","Warning Only","Dialog Box","Auto Block"],
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
         onChange: x => window.location.reload()
     });
 
     game.settings.register('NotYourTurn','IgnoreButton', {
-        name: "Ignore Button",
-        hint: "Determines who can see the ignore button in the dialog box",
+        name: "NotYourTurn.IgnoreButton",
+        hint: "NotYourTurn.IgnoreButton_Hint",
         scope: "world",
         config: true,
         type:Number,
         default:2,
-        choices:["Everyone","Trusted & Up","Assistants & Up","Gamemaster only","Nobody"],
+        choices:["NotYourTurn.Ignore_Everyone","NotYourTurn.Ignore_Trusted","NotYourTurn.Ignore_Assistants","NotYourTurn.Ignore_Gamemaster","NotYourTurn.Ignore_Nobody"],
         onChange: x => window.location.reload()
     });
     game.settings.register('NotYourTurn','RequestButton', {
-        name: "GM Request Button",
-        hint: "Allow players to request the GM to allow movement",
+        name: "NotYourTurn.RequestButton",
+        hint: "NotYourTurn.RequestButton_Hint",
         scope: "world",
         config: true,
         default: true,
@@ -171,8 +172,8 @@ Hooks.once('init', function(){
         onChange: x => window.location.reload()
     });
     game.settings.register('NotYourTurn','ChatMessages', {
-        name: "Chat Messages",
-        hint: "Creates a chat message when a token is moved when it's not its turn if set to 'warning only' or 'dialog box'",
+        name: "NotYourTurn.ChatMessage",
+        hint: "NotYourTurn.ChatMessages_Hint",
         scope: "world",
         config: true,
         default: true,
@@ -232,7 +233,7 @@ Hooks.on('controlToken', (token,controlled)=>{
     if (controlled == false) return;
     oldPositionX = token.data.x;
     oldPositionY = token.data.y;
-    console.log(token);
+    //console.log(token);
     Hooks.on('updateToken',(scene,data,c,d,user)=>{
         if (blockSett == 0) return;
         
@@ -248,14 +249,12 @@ Hooks.on('controlToken', (token,controlled)=>{
         //check if client controls the token, if the user corresponds with the client and if in combat
         if (user != game.userId || inCombat == false) return;
 
-        for (let i=0; i<game.combat.data.combatants.length; i++)
-            if (game.combat.data.combatants[i].tokenId == data._id){
-                if (game.combat.data.combatants[i].active) {
-                    oldPositionX = data.x;
-                    oldPositionY = data.y;
-                    return;
-                }
-            }
+        //Check if it's the token's turn
+        if (game.combat.combatant.tokenId == data._id){
+            oldPositionX = data.x;
+            oldPositionY = data.y;
+            return;
+        }
 
         //Check if token has moved
         if ((data.x - oldPositionX) == 0 && (data.y - oldPositionY) == 0) return;
@@ -270,16 +269,16 @@ Hooks.on('controlToken', (token,controlled)=>{
         //Check if autoblock applies, which will automatically force the token back to its original position
         if (blockSett == 3){
             token.shiftPosition((oldPositionX - data.x)/canvas.dimensions.size,(oldPositionY - data.y)/canvas.dimensions.size,true);
-            ui.notifications.warn("It is not your turn"); 
+            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
             timer = Date.now();
             duplicateCheck = false;
             
         }
         //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
         else if (blockSett == 1){
-            ui.notifications.warn("It is not your turn");
+            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning"));
             if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
-                whisperGM(token.name + " moved when it was not its turn");
+                whisperGM(token.name + "NotYourTurn.MovementWhisper");
             oldPositionX = data.x;
             oldPositionY = data.y;
             timer = Date.now();
@@ -294,30 +293,28 @@ Hooks.on('controlToken', (token,controlled)=>{
             let buttons = {
                 //Undo button
                 Undo: {
-                    label: `Undo`,
+                    label: game.i18n.localize("NotYourTurn.Dialog_UndoBtn"),
                     callback: () => applyChanges = 0
                 }
             }
             //Check if the role of the user. If applicable, add ignore button
             if (game.settings.get("NotYourTurn","IgnoreButton")<role){
                 buttons.Ignore = {
-                    label: `Ignore`,
+                    label: game.i18n.localize("NotYourTurn.Dialog_IgnoreBtn"),
                     callback: () => applyChanges = 1
                 }
             }
             //Check if the user is player, add request button if enabled
             if (game.settings.get("NotYourTurn","RequestButton")==true && role <4){
                 buttons.Request = {
-                    label: `Request`,
+                    label: game.i18n.localize("NotYourTurn.Dialog_RequestBtn"),
                     callback: () => applyChanges = 2
                 }
             }
 
-            let title = "It's not your turn!";
-            let content = ` You're trying to move, but it is not your turn<br><br>`;
             let d = new Dialog({
-                title: "It's not your turn!",
-                content: "You're trying to move, but it is not your turn<br><br>",
+                title: game.i18n.localize("NotYourTurn.Dialog_Title"),
+                content: game.i18n.localize("NotYourTurn.Dialog_Text")+ '<br><br>',
                 buttons,
                 default: "Undo",
                 close: html => {
@@ -330,7 +327,7 @@ Hooks.on('controlToken', (token,controlled)=>{
                     //If 'Ignore' is pressed, continue movement
                     else if (applyChanges == 1) { //ignore
                         if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
-                            whisperGM(token.name + " moved when it was not its turn");                                                                                    
+                            whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper"));                                                                                    
                         disableMoveKeys(false);
                         duplicateCheck = false;
                         oldPositionX = data.x;
