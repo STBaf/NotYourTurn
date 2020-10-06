@@ -3,7 +3,7 @@
     "NotYourTurn.Trusted": "2 Trusted",
     "NotYourTurn.Assistant": "3 Assistant",
     "NotYourTurn.Gamemaster": "4 Gamemaster",
-    "NotYourTurn.Mode_Hint":  "Determines behavior when token is moved when its not its turn for each permission level",
+    "NotYourTurn.Mode_Hint": "Determines behavior when token is moved when its not its turn for each permission level",
     "NotYourTurn.Mode_Off": "Off",
     "NotYourTurn.Mode_WarningOnly": "Warning Only",
     "NotYourTurn.Mode_Dialogbox": "Dialog Box",
