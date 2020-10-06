@@ -1,0 +1,40 @@
+{
+    "NotYourTurn.Player": "1 Jugador",
+    "NotYourTurn.Trusted": "2 Confianza",
+    "NotYourTurn.Assistant": "3 Asistente",
+    "NotYourTurn.Gamemaster": "4 Gamemaster",
+    "NotYourTurn.Mode_Hint": "Determina el comportamiento cuando se mueve un icono y no es el turno del jugador que lo controla para cada nivel de permisos",
+    "NotYourTurn.Mode_Off": "Desactivado",
+    "NotYourTurn.Mode_WarningOnly": "Avisar Solo",
+    "NotYourTurn.Mode_Dialogbox": "Cuadro de Diálogo",
+    "NotYourTurn.Mode_Autoblock": "Autobloquear",
+    "NotYourTurn.IgnoreButton": "Botón Ignorar",
+    "NotYourTurn.IgnoreButton_Hint": "Determina quién puede ver el botón ignorar en el cuadro de diálogo",
+    "NotYourTurn.Ignore_Everyone": "Todo el mundo",
+    "NotYourTurn.Ignore_Trusted": "Confianza y Superior",
+    "NotYourTurn.Ignore_Assistants": "Asistente y Superior",
+    "NotYourTurn.Ignore_Gamemaster": "Gamemaster solo",
+    "NotYourTurn.Ignore_Nobody": "Nadie",
+    "NotYourTurn.RequestButton": "Botón de Aviso al GM",
+    "NotYourTurn.RequestButton_Hint": "Permite a los jugadores solicitar al GM permiso para moverse",
+    "NotYourTurn.ChatMessage": "Mensajes del Chat",
+    "NotYourTurn.ChatMessages_Hint": "Crea un mensaje en el chat cuando se mueve un icono y no es su turno, siempre que se activen las opciones 'Avisar Solo' o 'Cuadro de Diálogo'",
+    
+    "NotYourTurn.Dialog_Title": "¡No es tu turno!",
+    "NotYourTurn.Dialog_Text": "Estás intentando moverte, pero no es tu turno",
+    "NotYourTurn.Dialog_UndoBtn": "Deshacer",
+    "NotYourTurn.Dialog_IgnoreBtn": "Ignorar",
+    "NotYourTurn.Dialog_RequestBtn": "Solicitar",
+
+    "NotYourTurn.Request_Title": "Solicitud de Movimiento",
+    "NotYourTurn.Request_Text1": "El Jugador '",
+    "NotYourTurn.Request_Text2": "' ha solicitado mover el icono '",
+    "NotYourTurn.Request_AcceptBtn": "Aceptar",
+    "NotYourTurn.Request_DeclineBtn": "Rechazar",
+
+    "NotYourTurn.UI_Warning": "¡No es tu turno!",
+    "NotYourTurn.UI_RequestGranted": "El GM ha aceptado tu solicitud",
+    "NotYourTurn.UI_RequestDeclined": "El GM ha rechazado tu solicitud",
+
+    "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno"
+}
