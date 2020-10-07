@@ -55,7 +55,7 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 ## Credits
 <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
 
-#### Localization
+### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)
 
 ## Abandonment
