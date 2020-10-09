@@ -55,6 +55,9 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 ## Credits
 <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
 
+### Localization
+<b>Spanish:</b> Lozalojo (https://github.com/lozalojo)
+
 ## Abandonment
 Abandoned modules are a (potential) problem for Foundry, because users and/or other modules might rely on abandoned modules, which might break in future Foundry updates.<br>
 I consider this module abandoned if all of the below cases apply:
