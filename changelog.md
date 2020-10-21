@@ -1,4 +1,8 @@
 # Changelog
+### v1.0.3 - 21-10-2020
+Fixed minor bugs
+Confirmed 0.7.5 compatibility
+
 ### v1.0.2 - 08-10-2020
 Added Spanish translation (by Lozalojo: https://github.com/lozalojo)
 

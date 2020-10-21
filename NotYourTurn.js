@@ -5,8 +5,6 @@
 
 new Date();
 let timer = 0; 
-let role;
-let blockSett;
 let duplicateCheck = false;
 let oldPositionX;
 let oldPositionY;
@@ -28,11 +26,7 @@ function whisperGM(message){
 }
 
 Hooks.on('ready', ()=>{
-    role =  game.user.data.role;
-    if (role == 1) blockSett = game.settings.get("NotYourTurn","BlockPlayer");
-    else if (role == 2) blockSett = game.settings.get("NotYourTurn","BlockTrusted");
-    else if (role == 3) blockSett = game.settings.get("NotYourTurn","BlockAssistant");
-    else if (role == 4) blockSett = game.settings.get("NotYourTurn","BlockGM");
+    
     timer = Date.now();
 
     game.socket.on(`module.NotYourTurn`, (payload) =>{
@@ -120,8 +114,7 @@ Hooks.once('init', function(){
         config: true,
         type:Number,
         default:2,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
-        onChange: x => window.location.reload()
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
     });
     game.settings.register('NotYourTurn','BlockTrusted', {
         name: "NotYourTurn.Trusted",
@@ -129,8 +122,7 @@ Hooks.once('init', function(){
         config: true,
         type:Number,
         default:2,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
-        onChange: x => window.location.reload()
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
     });
     game.settings.register('NotYourTurn','BlockAssistant', {
         name: "NotYourTurn.Assistant",
@@ -138,8 +130,7 @@ Hooks.once('init', function(){
         config: true,
         type:Number,
         default:1,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
-        onChange: x => window.location.reload()
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
     });
     game.settings.register('NotYourTurn','BlockGM', {
         name: "NotYourTurn.Gamemaster",
@@ -148,8 +139,7 @@ Hooks.once('init', function(){
         config: true,
         type:Number,
         default:1,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"],
-        onChange: x => window.location.reload()
+        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
     });
 
     game.settings.register('NotYourTurn','IgnoreButton', {
@@ -159,8 +149,7 @@ Hooks.once('init', function(){
         config: true,
         type:Number,
         default:2,
-        choices:["NotYourTurn.Ignore_Everyone","NotYourTurn.Ignore_Trusted","NotYourTurn.Ignore_Assistants","NotYourTurn.Ignore_Gamemaster","NotYourTurn.Ignore_Nobody"],
-        onChange: x => window.location.reload()
+        choices:["NotYourTurn.Ignore_Everyone","NotYourTurn.Ignore_Trusted","NotYourTurn.Ignore_Assistants","NotYourTurn.Ignore_Gamemaster","NotYourTurn.Ignore_Nobody"]
     });
     game.settings.register('NotYourTurn','RequestButton', {
         name: "NotYourTurn.RequestButton",
@@ -168,8 +157,7 @@ Hooks.once('init', function(){
         scope: "world",
         config: true,
         default: true,
-        type: Boolean,
-        onChange: x => window.location.reload()
+        type: Boolean
     });
     game.settings.register('NotYourTurn','ChatMessages', {
         name: "NotYourTurn.ChatMessage",
@@ -177,8 +165,7 @@ Hooks.once('init', function(){
         scope: "world",
         config: true,
         default: true,
-        type: Boolean,
-        onChange: x => window.location.reload()
+        type: Boolean
     });
 });
 
@@ -235,6 +222,12 @@ Hooks.on('controlToken', (token,controlled)=>{
     oldPositionY = token.data.y;
     //console.log(token);
     Hooks.on('updateToken',(scene,data,c,d,user)=>{
+        let role =  game.user.data.role;
+        let blockSett;
+        if (role == 1) blockSett = game.settings.get("NotYourTurn","BlockPlayer");
+        else if (role == 2) blockSett = game.settings.get("NotYourTurn","BlockTrusted");
+        else if (role == 3) blockSett = game.settings.get("NotYourTurn","BlockAssistant");
+        else if (role == 4) blockSett = game.settings.get("NotYourTurn","BlockGM");
         if (blockSett == 0) return;
         
         //To prevent the dialog from appearing multiple times, set a timer
