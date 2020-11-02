@@ -28,7 +28,7 @@
 
     "NotYourTurn.Request_Title": "Solicitud de Movimiento",
     "NotYourTurn.Request_Text1": "El Jugador '",
-    "NotYourTurn.Request_Text2": "' ha solicitado mover el icono '",
+    "NotYourTurn.Request_Text2": "' ha solicitado mover el icono ",
     "NotYourTurn.Request_AcceptBtn": "Aceptar",
     "NotYourTurn.Request_DeclineBtn": "Rechazar",
 
@@ -36,5 +36,7 @@
     "NotYourTurn.UI_RequestGranted": "El GM ha aceptado tu solicitud",
     "NotYourTurn.UI_RequestDeclined": "El GM ha rechazado tu solicitud",
 
-    "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno"
+    "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno",
+
+    "NotYourTurn.And": " y "
 }

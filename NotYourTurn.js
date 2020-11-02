@@ -3,350 +3,253 @@
  * Author: Cris#6864
  */
 
+import {registerSettings} from "./src/settings.js";
+import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
+
 new Date();
 let timer = 0; 
 let duplicateCheck = false;
-let oldPositionX;
-let oldPositionY;
-
-function checkCombat(){
-    if (game.combat) 
-        return game.combat.started;
-    else return false; 
-}
-
-function whisperGM(message){
-    for (let i=0; i<game.data.users.length; i++){
-        if (game.data.users[i].role > 2) 
-            ChatMessage.create({
-                content: message,
-                whisper: [game.data.users[i]._id]
-        });                                                                                      
-    }
-}
-
-Hooks.on('ready', ()=>{
-    
-    timer = Date.now();
-
-    game.socket.on(`module.NotYourTurn`, (payload) =>{
-        //check if this user is the target, else return
-        if (game.userId != payload.receiver) return;
-
-        //check if the correct message has been received
-        if (payload.msgType == "requestMovement"){
-        
-            //get the name of the requesting user, and his/her token data
-            let user = game.users.get(payload.sender).data.name;
-            let token;
-            for (let i=0; i<canvas.tokens.children[0].children.length; i++)
-                if (canvas.tokens.children[0].children[i].data._id == payload.tokenId) token = canvas.tokens.children[0].children[i];
-            
-            //build dialog
-            let applyChanges = 0;
-            let buttons = {
-            //Accept button, accepts the request
-                Accept: {
-                    label: game.i18n.localize("NotYourTurn.Request_AcceptBtn"),
-                    callback: () => applyChanges = 0
-                }
-            }
-            //Decline button, declines the request
-            buttons.Decline = {
-                label: game.i18n.localize("NotYourTurn.Request_DeclineBtn"),
-                callback: () => applyChanges = 1
-            }
-            
-            let d = new Dialog({
-                title: game.i18n.localize("NotYourTurn.Request_Title"),
-                content: game.i18n.localize("NotYourTurn.Request_Text1") + user + game.i18n.localize("NotYourTurn.Request_Text2") + token.data.name+ "'",
-                buttons,
-                default: "Decline",
-                close: html => {
-                    let ret;
-                    if (applyChanges == 0) ret = true;
-                    else if (applyChanges == 1) ret = false;
-                    let payload2 = {
-                        "msgType": "requestMovement_GMack",
-                        "sender": game.userId, 
-                        "receiver": payload.sender, 
-                        "tokenId": payload.tokenId,
-                        "shiftX": payload.shiftX,
-                        "shiftY": payload.shiftY,
-                        ret
-                    };
-                    game.socket.emit(`module.NotYourTurn`, payload2);
-                }
-            });
-            d.render(true);
-        }
-        else if (payload.msgType == "requestMovement_GMack"){
-            let token;
-                for (let i=0; i<canvas.tokens.children[0].children.length; i++)
-                    if (canvas.tokens.children[0].children[i].data._id == payload.tokenId) token = canvas.tokens.children[0].children[i];
-            if (payload.ret == true) {
-                ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted"));
-                oldPositionX = token.data.x;
-                oldPositionY = token.data.y;
-            }
-            else {
-                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
-                token.shiftPosition(payload.shiftX,payload.shiftY,true);
-                oldPositionX = token.data.x + payload.shiftX*canvas.dimensions.size;
-                oldPositionY = token.data.y + payload.shiftY*canvas.dimensions.size;
-            }
-            //let shiftY = (oldPositionY - data.y)/canvas.dimensions.size;
-            
-            disableMoveKeys(false);
-            duplicateCheck = false;
-            timer = Date.now();
-            
-        }
-    });
-});
+let controlledTokens = [];
+let dialogWait = false;
+let GMwait = false;
+let count = 0;
+let warningTimer = 0;
+let warningPeriod = 1000;
 
 Hooks.once('init', function(){
-
-    //initialize all settings
-    game.settings.register('NotYourTurn','BlockPlayer', {
-        name: "NotYourTurn.Player",
-        scope: "world",
-        config: true,
-        type:Number,
-        default:2,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
-    });
-    game.settings.register('NotYourTurn','BlockTrusted', {
-        name: "NotYourTurn.Trusted",
-        scope: "world",
-        config: true,
-        type:Number,
-        default:2,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
-    });
-    game.settings.register('NotYourTurn','BlockAssistant', {
-        name: "NotYourTurn.Assistant",
-        scope: "world",
-        config: true,
-        type:Number,
-        default:1,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
-    });
-    game.settings.register('NotYourTurn','BlockGM', {
-        name: "NotYourTurn.Gamemaster",
-        hint: "NotYourTurn.Mode_Hint",
-        scope: "world",
-        config: true,
-        type:Number,
-        default:1,
-        choices:["NotYourTurn.Mode_Off","NotYourTurn.Mode_WarningOnly","NotYourTurn.Mode_Dialogbox","NotYourTurn.Mode_Autoblock"]
-    });
-
-    game.settings.register('NotYourTurn','IgnoreButton', {
-        name: "NotYourTurn.IgnoreButton",
-        hint: "NotYourTurn.IgnoreButton_Hint",
-        scope: "world",
-        config: true,
-        type:Number,
-        default:2,
-        choices:["NotYourTurn.Ignore_Everyone","NotYourTurn.Ignore_Trusted","NotYourTurn.Ignore_Assistants","NotYourTurn.Ignore_Gamemaster","NotYourTurn.Ignore_Nobody"]
-    });
-    game.settings.register('NotYourTurn','RequestButton', {
-        name: "NotYourTurn.RequestButton",
-        hint: "NotYourTurn.RequestButton_Hint",
-        scope: "world",
-        config: true,
-        default: true,
-        type: Boolean
-    });
-    game.settings.register('NotYourTurn','ChatMessages', {
-        name: "NotYourTurn.ChatMessage",
-        hint: "NotYourTurn.ChatMessages_Hint",
-        scope: "world",
-        config: true,
-        default: true,
-        type: Boolean
-    });
+    registerSettings(); //in ./src/settings.js
 });
 
-function disableMoveKeys(enable){
-    if (enable){
-        game.keyboard.moveKeys.w = "";
-        game.keyboard.moveKeys.a = "";
-        game.keyboard.moveKeys.s = "";
-        game.keyboard.moveKeys.d = "";
-        game.keyboard.moveKeys.W = "";
-        game.keyboard.moveKeys.A = "";
-        game.keyboard.moveKeys.S = "";
-        game.keyboard.moveKeys.D = "";
-        game.keyboard.moveKeys.ArrowUp = "";
-        game.keyboard.moveKeys.ArrowRight = "";
-        game.keyboard.moveKeys.ArrowDown = "";
-        game.keyboard.moveKeys.ArrowLeft = "";
-        game.keyboard.moveKeys.Numpad1 = "";
-        game.keyboard.moveKeys.Numpad2 = "";
-        game.keyboard.moveKeys.Numpad3 = "";
-        game.keyboard.moveKeys.Numpad4 = "";
-        game.keyboard.moveKeys.Numpad6 = "";
-        game.keyboard.moveKeys.Numpad7 = "";
-        game.keyboard.moveKeys.Numpad8 = "";
-        game.keyboard.moveKeys.Numpad9 = "";
-    }
-    else {
-        game.keyboard.moveKeys.w = ["up"];
-        game.keyboard.moveKeys.s = ["down"];
-        game.keyboard.moveKeys.a = ["left"];
-        game.keyboard.moveKeys.d = ["right"];
-        game.keyboard.moveKeys.W = ["up"];
-        game.keyboard.moveKeys.S = ["down"];
-        game.keyboard.moveKeys.A = ["left"];
-        game.keyboard.moveKeys.D = ["right"];
-        game.keyboard.moveKeys.ArrowUp = ["up"];
-        game.keyboard.moveKeys.ArrowRight = ["right"];
-        game.keyboard.moveKeys.ArrowDown = ["down"];
-        game.keyboard.moveKeys.ArrowLeft = ["left"];
-        game.keyboard.moveKeys.Numpad1 = ["down","left"];
-        game.keyboard.moveKeys.Numpad2 = ["down"];
-        game.keyboard.moveKeys.Numpad3 = ["down","right"];
-        game.keyboard.moveKeys.Numpad4 = ["left"];
-        game.keyboard.moveKeys.Numpad6 = ["right"];
-        game.keyboard.moveKeys.Numpad7 = ["up","left"];
-        game.keyboard.moveKeys.Numpad8 = ["up"];
-        game.keyboard.moveKeys.Numpad9 = ["up","right"];
-    }   
-}
+Hooks.on('ready', ()=>{
+    timer = Date.now();
+    sockets();
+});
 
-Hooks.on('controlToken', (token,controlled)=>{
-    if (controlled == false) return;
-    oldPositionX = token.data.x;
-    oldPositionY = token.data.y;
-    //console.log(token);
-    Hooks.on('updateToken',(scene,data,c,d,user)=>{
-        let role =  game.user.data.role;
-        let blockSett;
-        if (role == 1) blockSett = game.settings.get("NotYourTurn","BlockPlayer");
-        else if (role == 2) blockSett = game.settings.get("NotYourTurn","BlockTrusted");
-        else if (role == 3) blockSett = game.settings.get("NotYourTurn","BlockAssistant");
-        else if (role == 4) blockSett = game.settings.get("NotYourTurn","BlockGM");
-        if (blockSett == 0) return;
-        
-        //To prevent the dialog from appearing multiple times, set a timer
-        if (duplicateCheck == true) 
-           return;
-        
-        timer = Date.now();
+Hooks.on("canvasReady",() => {
+    storeAllPositions();
+});
 
-        //check if currently in combat
-        let inCombat = checkCombat();
-
-        //check if client controls the token, if the user corresponds with the client and if in combat
-        if (user != game.userId || inCombat == false) return;
-
-        //Check if it's the token's turn
-        if (game.combat.combatant.tokenId == data._id){
-            oldPositionX = data.x;
-            oldPositionY = data.y;
-            return;
-        }
-
-        //Check if token has moved
-        if ((data.x - oldPositionX) == 0 && (data.y - oldPositionY) == 0) return;
-
-        
-        for (let i=0; i<canvas.tokens.children[0].children.length; i++)
-            if (canvas.tokens.children[0].children[i].data._id == data._id)
-                token = canvas.tokens.children[0].children[i];
-        
-        duplicateCheck = true;
-
-        //Check if autoblock applies, which will automatically force the token back to its original position
-        if (blockSett == 3){
-            token.shiftPosition((oldPositionX - data.x)/canvas.dimensions.size,(oldPositionY - data.y)/canvas.dimensions.size,true);
-            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
-            timer = Date.now();
-            duplicateCheck = false;
-            
-        }
-        //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
-        else if (blockSett == 1){
-            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning"));
-            if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
-                whisperGM(token.name + "NotYourTurn.MovementWhisper");
-            oldPositionX = data.x;
-            oldPositionY = data.y;
-            timer = Date.now();
-            duplicateCheck = false;
-        }
-        
-        //In all other cases, create a dialog box
-        else {
-            disableMoveKeys(true);
-            //Create a dialog, with buttons based on the current situation
-            let applyChanges = 0;
-            let buttons = {
-                //Undo button
-                Undo: {
-                    label: game.i18n.localize("NotYourTurn.Dialog_UndoBtn"),
-                    callback: () => applyChanges = 0
-                }
-            }
-            //Check if the role of the user. If applicable, add ignore button
-            if (game.settings.get("NotYourTurn","IgnoreButton")<role){
-                buttons.Ignore = {
-                    label: game.i18n.localize("NotYourTurn.Dialog_IgnoreBtn"),
-                    callback: () => applyChanges = 1
-                }
-            }
-            //Check if the user is player, add request button if enabled
-            if (game.settings.get("NotYourTurn","RequestButton")==true && role <4){
-                buttons.Request = {
-                    label: game.i18n.localize("NotYourTurn.Dialog_RequestBtn"),
-                    callback: () => applyChanges = 2
-                }
-            }
-
-            let d = new Dialog({
-                title: game.i18n.localize("NotYourTurn.Dialog_Title"),
-                content: game.i18n.localize("NotYourTurn.Dialog_Text")+ '<br><br>',
-                buttons,
-                default: "Undo",
-                close: html => {
-                    //If 'Undo' is pressed, move token back to previous position
-                    if (applyChanges == 0){ //undo
-                        token.shiftPosition((oldPositionX - data.x)/canvas.dimensions.size,(oldPositionY - data.y)/canvas.dimensions.size,true);
-                        disableMoveKeys(false);
-                        duplicateCheck = false;
-                    }
-                    //If 'Ignore' is pressed, continue movement
-                    else if (applyChanges == 1) { //ignore
-                        if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
-                            whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper"));                                                                                    
-                        disableMoveKeys(false);
-                        duplicateCheck = false;
-                        oldPositionX = data.x;
-                        oldPositionY = data.y;
-                    }  
-                    else if (applyChanges == 2) { //request movement
-                        //Request movement from GM, then apply movement (GM can undo this)
-                        let shiftX = (oldPositionX - data.x)/canvas.dimensions.size;
-                        let shiftY = (oldPositionY - data.y)/canvas.dimensions.size;
-                        for (let i=0; i<game.data.users.length; i++)
-                            if (game.data.users[i].role > 2) {
-                                let payload = {
-                                    "msgType": "requestMovement",
-                                    "sender": game.userId, 
-                                    "receiver": game.data.users[i]._id, 
-                                    "tokenId": token.data._id,
-                                    "shiftX": shiftX,
-                                    "shiftY": shiftY
-                                };
-                                game.socket.emit(`module.NotYourTurn`, payload);
-                            }
-                    }
+//Register control button
+Hooks.on("getSceneControlButtons", (controls) => {
+    if (game.user.isGM) {
+        let tokenButton = controls.find(b => b.name == "token")
+        if (tokenButton) {
+            tokenButton.tools.push({
+                name: "blockMovement",
+                title: game.i18n.localize("NotYourTurn.ControlBtn"),
+                icon: "fas fa-lock",
+                toggle: true,
+                active: game.settings.get('NotYourTurn','nonComat'),
+                visible: game.user.isGM,
+                onClick: (value) => {
+                    game.settings.set('NotYourTurn','nonComat',value);
+                    storeAllPositions();
                 }
             });
-            d.render(true); 
         }
-        timer = Date.now();
-    })
-})
+    }
+});
+
+//Register the token position
+Hooks.on('controlToken', (token,controlled)=>{
+    if (controlled) {
+        token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
+        for (let i=0; i<controlledTokens.length; i++)
+            if (controlledTokens[i] == token.id)
+                return;
+
+        let length = controlledTokens.length+1;
+        for (let i=0; i<length; i++){
+            if (controlledTokens[i] == undefined){
+                controlledTokens[i] = token.id;
+                return;
+            }
+        }   
+    }
+    else {
+        for (let i=0; i<controlledTokens.length; i++){
+            if (controlledTokens[i] == token.id){
+                controlledTokens.splice(i,1);
+                return;
+            }
+        }
+    }
+});
+
+Hooks.on('updateToken',(scene,data,update,options,userId)=>{
+    //To prevent the dialog from appearing multiple times, set a timer
+    if (duplicateCheck == true) 
+        return;
+    
+    //Check if movement has been updated
+    if (update.x == undefined && update.y == undefined) return;
+
+    //Check if client controls the token
+    if (userId != game.userId) return;
+
+    //Check if there is combat, or if nonCombat block is on
+    if (checkCombat() == false && game.settings.get('NotYourTurn','nonComat') == false) return;
+    
+    //make sure the next part only happens once, even if you have multiple tokens selected
+    count++;
+    if (count < controlledTokens.length) return;
+    count = 0;
+    duplicateCheck = true;
+    blockMovement(data);
+});
+
+async function blockMovement(data){
+    //Get the token shift
+    let token = canvas.tokens.children[0].children.find(p => p.id == data._id);
+    let movementShift = {x: data.x-token.x, y: data.y-token.y};
+    
+    let counter = 0;
+    let tokens = [];
+    //Add controlled tokens to the combatants array, except the token whose turn it is, or tokens that are not in combat is nonCombat is true
+    for (let i=0; i<controlledTokens.length; i++){
+        let token = canvas.tokens.children[0].children.find(p => p.id == controlledTokens[i]);
+        let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
+        if (checkCombat() && dialogWait == false){
+            if (game.combat.combatant.tokenId == controlledTokens[i]){ 
+                await token.setFlag('NotYourTurn','location',location);
+                continue;
+            }
+            let isCombatant = game.combat.combatants.find(p => p.tokenId == controlledTokens[i]);
+            if (isCombatant == undefined && game.settings.get('NotYourTurn','nonComat') == false){
+                await token.setFlag('NotYourTurn','location',location);
+                continue;
+            }
+        }
+        tokens[counter] = {id: controlledTokens[i], location, locationOld: token.getFlag('NotYourTurn','location')};
+        counter++;
+    }
+
+    //If there are no more tokens, return
+    if (tokens.length == 0) return;
+
+    //If the dialog box is open, prevent user from moving other tokens
+    if (dialogWait || GMwait){
+        await setTokenPositionOld(tokens);
+        duplicateCheck = false;
+        return;
+    }
+    
+    //Get the block setting, depending on the setting of the user role
+    let role =  game.user.data.role;
+    let blockSett = 0;
+    if (role == 1) blockSett = game.settings.get("NotYourTurn","BlockPlayer");
+    else if (role == 2) blockSett = game.settings.get("NotYourTurn","BlockTrusted");
+    else if (role == 3) blockSett = game.settings.get("NotYourTurn","BlockAssistant");
+    else if (role == 4) blockSett = game.settings.get("NotYourTurn","BlockGM");
+    if (blockSett == 0) return;
+    
+    //Check if autoblock applies, which will automatically force the token back to its original position
+    if (blockSett == 3){
+        await setTokenPositionOld(tokens);
+        if (Date.now()-warningTimer > warningPeriod) {
+            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
+            warningTimer = Date.now();
+        }
+        duplicateCheck = false;
+    }
+    
+    //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
+    else if (blockSett == 1){
+        let names = "";
+        for (let i=0; i<tokens.length; i++){
+            let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+            setTokenPositionNew(tokens);
+            names += "'" + token.name + "'";
+            if (i+2 == tokens.length) names += game.i18n.localize("NotYourTurn.And");
+            else if (i+1 == tokens.length) names += " ";
+            else names += ", ";
+        }
+        if (Date.now()-warningTimer > warningPeriod) {
+            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning"));
+            
+            if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
+                whisperGM(names + game.i18n.localize("NotYourTurn.MovementWhisper")); 
+            warningTimer = Date.now();
+        }
+        duplicateCheck = false;
+    }
+    
+    //In all other cases, create a dialog box
+    else {
+        disableMoveKeys(true);
+        duplicateCheck = false;
+        //Create a dialog, with buttons based on the current situation
+        let applyChanges = 0;
+        let buttons = {
+            //Undo button
+            Undo: {
+                label: game.i18n.localize("NotYourTurn.Dialog_UndoBtn"),
+                callback: () => applyChanges = 0
+            }
+        }
+        //Check if the role of the user. If applicable, add ignore button
+        if (game.settings.get("NotYourTurn","IgnoreButton")<role){
+            buttons.Ignore = {
+                label: game.i18n.localize("NotYourTurn.Dialog_IgnoreBtn"),
+                callback: () => applyChanges = 1
+            }
+        }
+        //Check if the user is player, add request button if enabled
+        if (game.settings.get("NotYourTurn","RequestButton")==true && role <4){
+            buttons.Request = {
+                label: game.i18n.localize("NotYourTurn.Dialog_RequestBtn"),
+                callback: () => applyChanges = 2
+            }
+        }
+
+        dialogWait = true;
+
+        let d = new Dialog({
+            title: game.i18n.localize("NotYourTurn.Dialog_Title"),
+            content: game.i18n.localize("NotYourTurn.Dialog_Text")+ '<br><br>',
+            buttons,
+            default: "Undo",
+            close: html => {
+                //If 'Undo' is pressed, move token back to previous position
+                if (applyChanges == 0){ //undo
+                    undoMovement(tokens);
+                }
+                //If 'Ignore' is pressed, continue movement
+                else if (applyChanges == 1) { //ignore
+                    let names = "";
+                    for (let i=0; i<tokens.length; i++){
+                        setTokenPositionNew(tokens);
+                        let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+                        names += "'" + token.name + "'";
+                        if (i+2 == tokens.length) names += " and ";
+                        else if (i+1 == tokens.length) names += " ";
+                        else names += ", ";
+                    }
+                    if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
+                        whisperGM(names + game.i18n.localize("NotYourTurn.MovementWhisper"));                                                                                    
+                    disableMoveKeys(false);
+                    duplicateCheck = false;
+                    dialogWait = false;
+                }  
+                else if (applyChanges == 2) { //request movement
+                    //Request movement from GM, then apply movement (GM can undo this)
+                    GMwait = true;
+                    duplicateCheck = false;
+                    dialogWait = false;
+                    for (let i=0; i<game.data.users.length; i++)
+                        if (game.data.users[i].role > 2) {
+                            let payload = {
+                                "msgType": "requestMovement",
+                                "sender": game.userId, 
+                                "receiver": game.data.users[i]._id, 
+                                "tokens": tokens
+                            };
+                            game.socket.emit(`module.NotYourTurn`, payload);
+                        }
+                }
+            }
+        });
+        d.render(true); 
+    }
+}
+

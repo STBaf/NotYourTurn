@@ -28,7 +28,7 @@
 
     "NotYourTurn.Request_Title": "Movement Request",
     "NotYourTurn.Request_Text1": "Player '",
-    "NotYourTurn.Request_Text2": "' has requested to move token '",
+    "NotYourTurn.Request_Text2": "' has requested to move token ",
     "NotYourTurn.Request_AcceptBtn": "Accept",
     "NotYourTurn.Request_DeclineBtn": "Decline",
 
@@ -36,5 +36,9 @@
     "NotYourTurn.UI_RequestGranted": "The GM has granted your request",
     "NotYourTurn.UI_RequestDeclined": "The GM has declined your request",
 
-    "NotYourTurn.MovementWhisper": " moved when it was not its turn"
+    "NotYourTurn.MovementWhisper": " moved when it was not their turn",
+
+    "NotYourTurn.And": " and ",
+
+    "NotYourTurn.ControlBtn": "Block Movement"
 }
