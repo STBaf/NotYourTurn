@@ -42,10 +42,7 @@ The operation of the module can be modified in the module settings. Here is an o
 
 ## Software Versions & Module Incompatibilities
 <b>Foundry VTT:</b> Tested on 0.6.6 - 0.7.5<br>
-<b>Module Incompatibilities:</b> 
-<ul>
-<li><b>Enhanced Movement:</b> For some reason Not Your Turn registers movement when Enhanced Movement is enabled and the combat tracker turn is incremented (GM only). Recommended workarount: Set Gamemaster's behavior to 'Off' in the module settings. </li>
-</ul>
+<b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback
 If you have any suggestions or bugs to report, feel free to contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
