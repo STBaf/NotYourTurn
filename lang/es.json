@@ -1,8 +1,8 @@
 {
-    "NotYourTurn.Player": "1 Jugador",
-    "NotYourTurn.Trusted": "2 Confianza",
-    "NotYourTurn.Assistant": "3 Asistente",
-    "NotYourTurn.Gamemaster": "4 Gamemaster",
+    "NotYourTurn.Player": "Jugador",
+    "NotYourTurn.Trusted": "Confianza",
+    "NotYourTurn.Assistant": "Asistente",
+    "NotYourTurn.Gamemaster": "Gamemaster",
     "NotYourTurn.Mode_Hint": "Determina el comportamiento cuando se mueve un icono y no es el turno del jugador que lo controla para cada nivel de permisos",
     "NotYourTurn.Mode_Off": "Desactivado",
     "NotYourTurn.Mode_WarningOnly": "Avisar Solo",
@@ -28,7 +28,7 @@
 
     "NotYourTurn.Request_Title": "Solicitud de Movimiento",
     "NotYourTurn.Request_Text1": "El Jugador '",
-    "NotYourTurn.Request_Text2": "' ha solicitado mover el icono '",
+    "NotYourTurn.Request_Text2": "' ha solicitado mover el icono ",
     "NotYourTurn.Request_AcceptBtn": "Aceptar",
     "NotYourTurn.Request_DeclineBtn": "Rechazar",
 
@@ -36,5 +36,7 @@
     "NotYourTurn.UI_RequestGranted": "El GM ha aceptado tu solicitud",
     "NotYourTurn.UI_RequestDeclined": "El GM ha rechazado tu solicitud",
 
-    "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno"
+    "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno",
+
+    "NotYourTurn.And": " y "
 }

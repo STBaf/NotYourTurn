@@ -1,9 +1,10 @@
 # Not Your Turn
-'Not Your Turn' is a <a href="https://foundryvtt.com/">Foundry VTT</a> module that prevents tokens from moving when it's not their turn in combat.<br>
-<b>Please note: at the moment the module only works when trying to move one token at a time. Moving multiple tokens might cause unexpected behaviour. This will hopefully be fixed in the next update.</b>
+'Not Your Turn' is a <a href="https://foundryvtt.com/">Foundry VTT</a> module that prevents tokens from moving when the GM doesn't want it. Using the default settings the module only blocks movement during combat, but by pressing the 'Block Movement' button in the Basic Controls (buttons on the left) you can enable the module for all movement.<br>
+
+<b>Note: </b>You need to uninstall the previous version before you can install the latest (v1.1.0) version!
 
 ### Operation
-If a player moves a token when it's not the token's turn one of a few things can happen, depending on the settings:
+If a player moves a token when it's not the token's turn (or always, if 'Block Movement' is enabled) one of a few things can happen, depending on the settings:
 <ul>
 <li><b>Off</b> - Nothing, the token can continue moving</li>
 <li><b>Warning</b> - A warning is given, but the token can continue moving</li>
@@ -39,14 +40,8 @@ The operation of the module can be modified in the module settings. Here is an o
 
 ![moduleSettings](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
-### Limitations/Issues
-<ul>
-<li>Currently, the module only works if one token is moved at a time. Expect weird behaviour if 'Autoblock' is on, and multiple tokens are moved</li>
-<li>When a player is waiting on the GM to answer his/her request, the player can move other tokens they control</li>
-</ul>
-
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 0.6.6<br>
+<b>Foundry VTT:</b> Tested on 0.6.6 - 0.7.5<br>
 <b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback
