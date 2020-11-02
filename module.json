@@ -21,6 +21,6 @@
       }
     ],
     "url": "https://github.com/CDeenen/NotYourTurn",
-    "manifest": "https://github.com/CDeenen/NotYourTurn/releases/download/v1.1.0/module.json",
-    "download": "https://github.com/CDeenen/NotYourTurn/releases/download/v1.1.0/NotYourTurn.zip"
+    "manifest": "https://raw.githubusercontent.com/CDeenen/NotYourTurn/master/module.json",
+    "download": "https://github.com/CDeenen/NotYourTurn/archive/master.zip"
   }
