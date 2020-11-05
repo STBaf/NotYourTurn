@@ -1,4 +1,7 @@
 {
+    "I18N.LANGUAGE": "Español",
+    "I18N.MAINTAINERS": "@Viriato139ac#0342",
+  
     "NotYourTurn.Player": "Jugador",
     "NotYourTurn.Trusted": "Confianza",
     "NotYourTurn.Assistant": "Asistente",
@@ -38,5 +41,7 @@
 
     "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno",
 
-    "NotYourTurn.And": " y "
+    "NotYourTurn.And": " y ",
+
+    "NotYourTurn.ControlBtn": "Bloquear Movimiento"
 }
