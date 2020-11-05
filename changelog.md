@@ -1,4 +1,8 @@
 # Changelog
+### v1.1.1 - 05-11-2020
+Bug fix
+-Stupid bug fixed :p
+
 ### v1.1.0 - 02-11-2020
 Enhancements
 -Reduced the amount of warnings/chat messages to max 1 per second

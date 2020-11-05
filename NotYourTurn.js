@@ -53,6 +53,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled) {
+        console.log(controlledTokens);
         token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
@@ -75,6 +76,7 @@ Hooks.on('controlToken', (token,controlled)=>{
         }
     }
 });
+
 
 Hooks.on('updateToken',(scene,data,update,options,userId)=>{
     //To prevent the dialog from appearing multiple times, set a timer
@@ -125,7 +127,10 @@ async function blockMovement(data){
     }
 
     //If there are no more tokens, return
-    if (tokens.length == 0) return;
+    if (tokens.length == 0) {
+        duplicateCheck = false;
+        return;
+    }
 
     //If the dialog box is open, prevent user from moving other tokens
     if (dialogWait || GMwait){
