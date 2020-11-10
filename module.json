@@ -7,7 +7,7 @@
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,
     "minimumCoreVersion": "0.6.6",
-    "compatibleCoreVersion": "0.7.5",
+    "compatibleCoreVersion": "0.7.6",
     "languages": [
       {
         "lang": "en",
