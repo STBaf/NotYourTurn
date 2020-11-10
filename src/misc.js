@@ -1,4 +1,4 @@
-
+import {duplicateCheck,setDuplicateCheck,setDialogWait,setGMwait,setTimer} from "../NotYourTurn.js";
 
 export function checkCombat(){
     if (game.combat) 
@@ -46,8 +46,8 @@ export async function setTokenPositionNew(tokens){
 export async function undoMovement(tokens){
     await setTokenPositionOld(tokens);
     disableMoveKeys(false);
-    duplicateCheck = false;
-    dialogWait = false;
+    setDuplicateCheck(false);
+    setDialogWait(false);
 }
 
 export function sockets(){
@@ -121,9 +121,9 @@ export function sockets(){
             else 
                 ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
             disableMoveKeys(false);
-            duplicateCheck = false;
-            GMwait = false;
-            timer = Date.now();
+            setDuplicateCheck(false);
+            setGMwait(false);
+            setTimer(Date.now());
         }
     });
 }

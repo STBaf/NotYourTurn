@@ -8,7 +8,7 @@ import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, set
 
 new Date();
 let timer = 0; 
-let duplicateCheck = false;
+export var duplicateCheck = false;
 let controlledTokens = [];
 let dialogWait = false;
 let GMwait = false;
@@ -53,7 +53,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled) {
-        console.log(controlledTokens);
+        //console.log(controlledTokens);
         token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
@@ -79,6 +79,7 @@ Hooks.on('controlToken', (token,controlled)=>{
 
 
 Hooks.on('updateToken',(scene,data,update,options,userId)=>{
+    //console.log(duplicateCheck);
     //To prevent the dialog from appearing multiple times, set a timer
     if (duplicateCheck == true) 
         return;
@@ -258,3 +259,18 @@ async function blockMovement(data){
     }
 }
 
+export function setDuplicateCheck(value){
+    duplicateCheck = value;
+}
+
+export function setDialogWait(value){
+    dialogWait = value;
+}
+
+export function setGMwait(value){
+    GMwait = value;
+}
+
+export function setTimer(value){
+    timer = value;
+}

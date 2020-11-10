@@ -1,4 +1,8 @@
 # Changelog
+### v1.1.2 - 10-11-2020
+Bug fix
+-Another stupid bug fixed
+
 ### v1.1.1 - 05-11-2020
 Enhancements
 -Spanish translation updated
