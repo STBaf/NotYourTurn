@@ -53,7 +53,7 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 ### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)
 
-Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
+<br>Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
 
 ## Abandonment
 Abandoned modules are a (potential) problem for Foundry, because users and/or other modules might rely on abandoned modules, which might break in future Foundry updates.<br>
