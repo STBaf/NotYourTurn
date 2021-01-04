@@ -1,7 +1,7 @@
 # Not Your Turn
 'Not Your Turn' is a <a href="https://foundryvtt.com/">Foundry VTT</a> module that prevents tokens from moving when the GM doesn't want it. Using the default settings the module only blocks movement during combat, but by pressing the 'Block Movement' button in the Basic Controls (buttons on the left) you can enable the module for all movement.<br>
 
-<b>Note: </b>You need to uninstall the previous version before you can install the latest (v1.1.0) version!
+<b>Note: </b>If you have a pre v1.1.0 version, you need to uninstall it before you can install the latest version! Any version later than that should update normally.
 
 ### Operation
 If a player moves a token when it's not the token's turn (or always, if 'Block Movement' is enabled) one of a few things can happen, depending on the settings:
