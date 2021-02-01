@@ -52,7 +52,7 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
 
 ### Localization
-<b>Spanish:</b> Lozalojo (https://github.com/lozalojo)
+<b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br>
 <b>French:</b> Maxtor
 
 <br>Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
