@@ -26,6 +26,7 @@ If the request button is pressed, a dialog box appears for the GM, with the foll
 <li><b>Accept</b> - Accepts the movement request</li>
 <li><b>Decline</b> - Declines the request and returns the token to its start position</li>
 </ul>
+The request is automatically declined if the GM is not on the same scene as the player.
 
 ![request](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/Request.png)
 
@@ -41,7 +42,7 @@ The operation of the module can be modified in the module settings. Here is an o
 ![moduleSettings](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 0.6.6 - 0.7.5<br>
+<b>Foundry VTT:</b> Tested on 0.6.6 - 0.7.9<br>
 <b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback
@@ -53,8 +54,6 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 ### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)
 <b>French:</b> Maxtor
-
-<br>Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
 
 <br>Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
 
