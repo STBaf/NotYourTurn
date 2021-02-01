@@ -35,6 +35,7 @@
     "NotYourTurn.UI_Warning": "It's not your turn!",
     "NotYourTurn.UI_RequestGranted": "The GM has granted your request",
     "NotYourTurn.UI_RequestDeclined": "The GM has declined your request",
+    "NotYourTurn.UI_GMnotOnScene": "Declined, the GM is not on the same scene",
 
     "NotYourTurn.MovementWhisper": " moved when it was not their turn",
 

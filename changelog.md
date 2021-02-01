@@ -1,4 +1,13 @@
 # Changelog
+### v1.1.3 - 01-02-2021
+Bug fixes
+-'Block Movement' control button would stop working after a scene change
+-'Block Movement' control button wouldn't work for a token that is selected by default on a scene load
+-GM request would break module if the GM was not on the same scene as the player, it now autorejects
+
+Additions
+-French localization added (credit: Maxtor)
+
 ### v1.1.2 - 10-11-2020
 Bug fix
 -Another stupid bug fixed

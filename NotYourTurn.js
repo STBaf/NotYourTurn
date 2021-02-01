@@ -20,13 +20,18 @@ Hooks.once('init', function(){
     registerSettings(); //in ./src/settings.js
 });
 
-Hooks.on('ready', ()=>{
+Hooks.once('ready', ()=>{
     timer = Date.now();
     sockets();
 });
 
 Hooks.on("canvasReady",() => {
+    controlledTokens = [];
     storeAllPositions();
+    let tokens = canvas.tokens.children[0].children;
+    for (let i=0; i<tokens.length; i++)
+        if (tokens[i]._controlled)
+            controlledTokens.push(tokens[i].id);
 });
 
 //Register control button
@@ -53,7 +58,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled) {
-        //console.log(controlledTokens);
+        
         token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
@@ -75,6 +80,7 @@ Hooks.on('controlToken', (token,controlled)=>{
             }
         }
     }
+    
 });
 
 
@@ -123,7 +129,8 @@ async function blockMovement(data){
                 continue;
             }
         }
-        tokens[counter] = {id: controlledTokens[i], location, locationOld: token.getFlag('NotYourTurn','location')};
+        const tokenName = token.name;
+        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: token.getFlag('NotYourTurn','location')};
         counter++;
     }
 
@@ -238,19 +245,31 @@ async function blockMovement(data){
                     dialogWait = false;
                 }  
                 else if (applyChanges == 2) { //request movement
-                    //Request movement from GM, then apply movement (GM can undo this)
-                    GMwait = true;
-                    duplicateCheck = false;
-                    dialogWait = false;
+                    //Request movement from GM, then apply movement (GM can undo this)   
                     for (let i=0; i<game.data.users.length; i++)
-                        if (game.data.users[i].role > 2) {
-                            let payload = {
-                                "msgType": "requestMovement",
-                                "sender": game.userId, 
-                                "receiver": game.data.users[i]._id, 
-                                "tokens": tokens
-                            };
-                            game.socket.emit(`module.NotYourTurn`, payload);
+                        if (game.users.entries[i].role > 2) {
+                            if (game.users.entries[i].viewedScene == canvas.scene.id){
+                                GMwait = true;
+                                duplicateCheck = false;
+                                dialogWait = false;
+                                let payload = {
+                                    "msgType": "requestMovement",
+                                    "sender": game.userId, 
+                                    "receiver": game.data.users[i]._id, 
+                                    "tokens": tokens,
+                                    "scene": {
+                                        id: canvas.scene.id,
+                                        name: canvas.scene.name
+                                    }
+                                };
+                                game.socket.emit(`module.NotYourTurn`, payload);
+                            }
+                            else {
+                                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_GMnotOnScene"));
+                                GMwait = false;
+                                undoMovement(tokens);
+                            }
+                            break;
                         }
                 }
             }
