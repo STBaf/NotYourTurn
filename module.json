@@ -2,12 +2,12 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "1.1.0",
+    "version": "1.1.4",
     "author": "CDeenen",
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,
     "minimumCoreVersion": "0.6.6",
-    "compatibleCoreVersion": "0.7.5",
+    "compatibleCoreVersion": "0.7.9",
     "languages": [
       {
         "lang": "en",
@@ -16,9 +16,14 @@
       },
 	  {
         "lang": "es",
-        "name": "Spanish",
+        "name": "Español",
         "path": "lang/es.json"
-      }
+      },
+      {
+        "lang": "fr",
+        "name": "Français",
+        "path": "lang/fr.json"
+        }
     ],
     "url": "https://github.com/CDeenen/NotYourTurn",
     "manifest": "https://raw.githubusercontent.com/CDeenen/NotYourTurn/master/module.json",

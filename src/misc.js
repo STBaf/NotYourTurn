@@ -1,4 +1,4 @@
-
+import {duplicateCheck,setDuplicateCheck,setDialogWait,setGMwait,setTimer} from "../NotYourTurn.js";
 
 export function checkCombat(){
     if (game.combat) 
@@ -46,24 +46,21 @@ export async function setTokenPositionNew(tokens){
 export async function undoMovement(tokens){
     await setTokenPositionOld(tokens);
     disableMoveKeys(false);
-    duplicateCheck = false;
-    dialogWait = false;
+    setDuplicateCheck(false);
+    setDialogWait(false);
 }
 
 export function sockets(){
     game.socket.on(`module.NotYourTurn`, (payload) =>{
         //check if this user is the target, else return
         if (game.userId != payload.receiver) return;
-
+        //console.log(payload);
         //check if the correct message has been received
         if (payload.msgType == "requestMovement"){
         
             //get the name of the requesting user, and his/her token data
-            let user = game.users.get(payload.sender).data.name;
-            let token;
-            for (let i=0; i<canvas.tokens.children[0].children.length; i++)
-                if (canvas.tokens.children[0].children[i].data._id == payload.tokenId) token = canvas.tokens.children[0].children[i];
-            
+            const user = game.users.get(payload.sender).data.name;
+
             //build dialog
             let applyChanges = 0;
             let buttons = {
@@ -81,8 +78,7 @@ export function sockets(){
             
             let names = "";
             for (let i=0; i<payload.tokens.length; i++){
-                let token = canvas.tokens.children[0].children.find(p => p.id == payload.tokens[i].id);
-                names += "'" + token.name + "'";
+                names += "'" + payload.tokens[i].name + "'";
                 if (i+2 == payload.tokens.length) names += game.i18n.localize("NotYourTurn.And");
                 else if (i+1 == payload.tokens.length) names += " ";
                 else names += ", ";
@@ -121,9 +117,9 @@ export function sockets(){
             else 
                 ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
             disableMoveKeys(false);
-            duplicateCheck = false;
-            GMwait = false;
-            timer = Date.now();
+            setDuplicateCheck(false);
+            setGMwait(false);
+            setTimer(Date.now());
         }
     });
 }

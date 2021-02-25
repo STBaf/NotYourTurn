@@ -1,4 +1,29 @@
 # Changelog
+### v1.1.4 - 25-02-2021
+Additions
+-Added control button to quickly enable or disable movement blocking during combat
+-Added hooks and hook listeners for external module integration
+
+### v1.1.3 - 01-02-2021
+Bug fixes
+-'Block Movement' control button would stop working after a scene change
+-'Block Movement' control button wouldn't work for a token that is selected by default on a scene load
+-GM request would break module if the GM was not on the same scene as the player, it now autorejects
+
+Additions
+-French localization added (credit: Maxtor)
+
+### v1.1.2 - 10-11-2020
+Bug fix
+-Another stupid bug fixed
+
+### v1.1.1 - 05-11-2020
+Enhancements
+-Spanish translation updated
+
+Bug fix
+-Stupid bug fixed :p
+
 ### v1.1.0 - 02-11-2020
 Enhancements
 -Reduced the amount of warnings/chat messages to max 1 per second

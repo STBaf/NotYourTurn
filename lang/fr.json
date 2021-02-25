@@ -1,0 +1,45 @@
+{
+    "NotYourTurn.Player": "Joueur",
+    "NotYourTurn.Trusted": "Joueur de confiance",
+    "NotYourTurn.Assistant": "Assistant MJ",
+    "NotYourTurn.Gamemaster": "Maître du jeu",
+    "NotYourTurn.Mode_Hint": "Détermine le comportement lorsque le jeton est déplacé lorsque ce n'est pas son tour pour chaque niveau d'autorisation",
+    "NotYourTurn.Mode_Off": "Inactif",
+    "NotYourTurn.Mode_WarningOnly": "Alerte seulement",
+    "NotYourTurn.Mode_Dialogbox": "Boîte de dialogue",
+    "NotYourTurn.Mode_Autoblock": "Bloquer automatiquement",
+    "NotYourTurn.IgnoreButton": "Bouton Ignorer",
+    "NotYourTurn.IgnoreButton_Hint": "Détermine qui peut voir le bouton Ignorer dans la boîte de dialogue",
+    "NotYourTurn.Ignore_Everyone": "Tout le monde",
+    "NotYourTurn.Ignore_Trusted": "Joueur de confiance et rôles supérieurs",
+    "NotYourTurn.Ignore_Assistants": "Assistants et rôles supérieurs",
+    "NotYourTurn.Ignore_Gamemaster": "MJ uniquement",
+    "NotYourTurn.Ignore_Nobody": "Personne",
+    "NotYourTurn.RequestButton": "Bouton de requête au MJ",
+    "NotYourTurn.RequestButton_Hint": "Autoriser les joueurs à faire une requête au MJ pour autoriser leur mouvement",
+    "NotYourTurn.ChatMessage": "Messages dans le chat",
+    "NotYourTurn.ChatMessages_Hint": "Crée un message dans le chat quand un token est bougé quand ce n'est pas son tour si paramétré comme 'Alerte seulement' ou 'Boîte de dialogue'",
+    
+    "NotYourTurn.Dialog_Title": "Ce n'est pas votre tour !",
+    "NotYourTurn.Dialog_Text": "Vous essayez de bouger, mais ce n'est pas votre tour !",
+    "NotYourTurn.Dialog_UndoBtn": "Annuler",
+    "NotYourTurn.Dialog_IgnoreBtn": "Ignorer",
+    "NotYourTurn.Dialog_RequestBtn": "Demander",
+
+    "NotYourTurn.Request_Title": "Demander une autorisation de mouvement",
+    "NotYourTurn.Request_Text1": "Joueur '",
+    "NotYourTurn.Request_Text2": "' a demandé de bouger le token ",
+    "NotYourTurn.Request_AcceptBtn": "Accepter",
+    "NotYourTurn.Request_DeclineBtn": "Décliner",
+
+    "NotYourTurn.UI_Warning": "Ce n'est pas votre tour!",
+    "NotYourTurn.UI_RequestGranted": "Le MJ a accepté votre requête !",
+    "NotYourTurn.UI_RequestDeclined": "Le MJ a rejeté votre requête !",
+    "NotYourTurn.UI_GMnotOnScene": "Rejeté, le MJ n'est pas sur la même scène !",
+
+    "NotYourTurn.MovementWhisper": " a bougé quand ce n'était pas son tour !",
+
+    "NotYourTurn.And": " et ",
+
+    "NotYourTurn.ControlBtn": "Mouvement bloqué"
+}

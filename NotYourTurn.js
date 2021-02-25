@@ -8,7 +8,7 @@ import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, set
 
 new Date();
 let timer = 0; 
-let duplicateCheck = false;
+export var duplicateCheck = false;
 let controlledTokens = [];
 let dialogWait = false;
 let GMwait = false;
@@ -16,43 +16,96 @@ let count = 0;
 let warningTimer = 0;
 let warningPeriod = 1000;
 
+Hooks.on('setNotYourTurn',async(data) => { 
+    if (game.user.isGM == false) return;
+    let nonCombat;
+    if (data.nonCombat != undefined) {
+        if (data.nonCombat == true) nonCombat = true;
+        else if (data.nonCombat == false) nonCombat = false;
+        else if (data.nonCombat == 'toggle') nonCombat = !game.settings.get('NotYourTurn','nonCombat');
+        await game.settings.set('NotYourTurn','nonCombat',nonCombat);
+        ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "blockMovement").active = nonCombat;
+        ui.controls.render();  
+        storeAllPositions();
+    }
+    let combat;
+    if (data.combat != undefined) {
+        if (data.combat == true) combat = true;
+        else if (data.combat == false) combat = false;
+        else if (data.combat == 'toggle') combat = !game.settings.get('NotYourTurn','enable');
+        await game.settings.set('NotYourTurn','enable',combat);
+        ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "enableNotYourTurn").active = combat;
+        ui.controls.render(); 
+        storeAllPositions(); 
+    }
+});
+
 Hooks.once('init', function(){
     registerSettings(); //in ./src/settings.js
 });
 
-Hooks.on('ready', ()=>{
+Hooks.once('ready', ()=>{
     timer = Date.now();
     sockets();
 });
 
 Hooks.on("canvasReady",() => {
+    controlledTokens = [];
     storeAllPositions();
+    let tokens = canvas.tokens.children[0].children;
+    for (let i=0; i<tokens.length; i++)
+        if (tokens[i]._controlled)
+            controlledTokens.push(tokens[i].id);
 });
 
 //Register control button
-Hooks.on("getSceneControlButtons", (controls) => {
+Hooks.on("getSceneControlButtons", async(controls) => {
     if (game.user.isGM) {
         let tokenButton = controls.find(b => b.name == "token")
         if (tokenButton) {
-            tokenButton.tools.push({
-                name: "blockMovement",
-                title: game.i18n.localize("NotYourTurn.ControlBtn"),
-                icon: "fas fa-lock",
-                toggle: true,
-                active: game.settings.get('NotYourTurn','nonComat'),
-                visible: game.user.isGM,
-                onClick: (value) => {
-                    game.settings.set('NotYourTurn','nonComat',value);
-                    storeAllPositions();
+            tokenButton.tools.push(
+                {
+                    name: "enableNotYourTurn",
+                    title: game.i18n.localize("NotYourTurn.Enable"),
+                    icon: "fas fa-fist-raised",
+                    toggle: true,
+                    active: game.settings.get('NotYourTurn','enable'),
+                    visible: game.user.isGM,
+                    onClick: (value) => {
+                        setEnable(value);
+                    }
+                },
+                {
+                    name: "blockMovement",
+                    title: game.i18n.localize("NotYourTurn.ControlBtn"),
+                    icon: "fas fa-lock",
+                    toggle: true,
+                    active: game.settings.get('NotYourTurn','nonCombat'),
+                    visible: game.user.isGM,
+                    onClick: (value) => {
+                        setNonCombat(value);
+                    }
                 }
-            });
+            );
         }
     }
 });
 
+async function setEnable(value){
+    await game.settings.set('NotYourTurn','enable',value);
+    storeAllPositions();
+    Hooks.call("NotYourTurn",{enable:value});
+}
+async function setNonCombat(value){
+    await game.settings.set('NotYourTurn','nonCombat',value);
+    storeAllPositions();
+    Hooks.call("NotYourTurn",{nonCombat:value});
+}
+
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled) {
+        
         token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
@@ -74,7 +127,9 @@ Hooks.on('controlToken', (token,controlled)=>{
             }
         }
     }
+    
 });
+
 
 Hooks.on('updateToken',(scene,data,update,options,userId)=>{
     //To prevent the dialog from appearing multiple times, set a timer
@@ -88,7 +143,8 @@ Hooks.on('updateToken',(scene,data,update,options,userId)=>{
     if (userId != game.userId) return;
 
     //Check if there is combat, or if nonCombat block is on
-    if (checkCombat() == false && game.settings.get('NotYourTurn','nonComat') == false) return;
+    if (checkCombat() == false && game.settings.get('NotYourTurn','nonCombat') == false) return;
+    if (checkCombat() && game.settings.get('NotYourTurn','enable') == false) return;
     
     //make sure the next part only happens once, even if you have multiple tokens selected
     count++;
@@ -97,7 +153,7 @@ Hooks.on('updateToken',(scene,data,update,options,userId)=>{
     duplicateCheck = true;
     blockMovement(data);
 });
-
+//if (game.settings.get('NotYourTurn','enable') == false) return;
 async function blockMovement(data){
     //Get the token shift
     let token = canvas.tokens.children[0].children.find(p => p.id == data._id);
@@ -115,17 +171,21 @@ async function blockMovement(data){
                 continue;
             }
             let isCombatant = game.combat.combatants.find(p => p.tokenId == controlledTokens[i]);
-            if (isCombatant == undefined && game.settings.get('NotYourTurn','nonComat') == false){
+            if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false){
                 await token.setFlag('NotYourTurn','location',location);
                 continue;
             }
         }
-        tokens[counter] = {id: controlledTokens[i], location, locationOld: token.getFlag('NotYourTurn','location')};
+        const tokenName = token.name;
+        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: token.getFlag('NotYourTurn','location')};
         counter++;
     }
 
     //If there are no more tokens, return
-    if (tokens.length == 0) return;
+    if (tokens.length == 0) {
+        duplicateCheck = false;
+        return;
+    }
 
     //If the dialog box is open, prevent user from moving other tokens
     if (dialogWait || GMwait){
@@ -232,19 +292,31 @@ async function blockMovement(data){
                     dialogWait = false;
                 }  
                 else if (applyChanges == 2) { //request movement
-                    //Request movement from GM, then apply movement (GM can undo this)
-                    GMwait = true;
-                    duplicateCheck = false;
-                    dialogWait = false;
+                    //Request movement from GM, then apply movement (GM can undo this)   
                     for (let i=0; i<game.data.users.length; i++)
-                        if (game.data.users[i].role > 2) {
-                            let payload = {
-                                "msgType": "requestMovement",
-                                "sender": game.userId, 
-                                "receiver": game.data.users[i]._id, 
-                                "tokens": tokens
-                            };
-                            game.socket.emit(`module.NotYourTurn`, payload);
+                        if (game.users.entries[i].role > 2) {
+                            if (game.users.entries[i].viewedScene == canvas.scene.id){
+                                GMwait = true;
+                                duplicateCheck = false;
+                                dialogWait = false;
+                                let payload = {
+                                    "msgType": "requestMovement",
+                                    "sender": game.userId, 
+                                    "receiver": game.data.users[i]._id, 
+                                    "tokens": tokens,
+                                    "scene": {
+                                        id: canvas.scene.id,
+                                        name: canvas.scene.name
+                                    }
+                                };
+                                game.socket.emit(`module.NotYourTurn`, payload);
+                            }
+                            else {
+                                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_GMnotOnScene"));
+                                GMwait = false;
+                                undoMovement(tokens);
+                            }
+                            break;
                         }
                 }
             }
@@ -253,3 +325,18 @@ async function blockMovement(data){
     }
 }
 
+export function setDuplicateCheck(value){
+    duplicateCheck = value;
+}
+
+export function setDialogWait(value){
+    dialogWait = value;
+}
+
+export function setGMwait(value){
+    GMwait = value;
+}
+
+export function setTimer(value){
+    timer = value;
+}

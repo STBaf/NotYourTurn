@@ -1,4 +1,7 @@
 {
+    "I18N.LANGUAGE": "Español",
+    "I18N.MAINTAINERS": "@Viriato139ac#0342",
+  
     "NotYourTurn.Player": "Jugador",
     "NotYourTurn.Trusted": "Confianza",
     "NotYourTurn.Assistant": "Asistente",
@@ -35,8 +38,11 @@
     "NotYourTurn.UI_Warning": "¡No es tu turno!",
     "NotYourTurn.UI_RequestGranted": "El GM ha aceptado tu solicitud",
     "NotYourTurn.UI_RequestDeclined": "El GM ha rechazado tu solicitud",
+    "NotYourTurn.UI_GMnotOnScene": "Rechazado, el GM no está en la misma escena",
 
     "NotYourTurn.MovementWhisper": " se ha movido cuando no era su turno",
 
-    "NotYourTurn.And": " y "
+    "NotYourTurn.And": " y ",
+
+    "NotYourTurn.ControlBtn": "Bloquear Movimiento"
 }
