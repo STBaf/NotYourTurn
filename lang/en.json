@@ -41,5 +41,7 @@
 
     "NotYourTurn.And": " and ",
 
-    "NotYourTurn.ControlBtn": "Block Movement"
+    "NotYourTurn.ControlBtn": "Block Non-Combat Movement",
+
+    "NotYourTurn.Enable": "Block Combat Movement"
 }

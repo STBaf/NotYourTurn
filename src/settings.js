@@ -59,11 +59,18 @@ export const registerSettings = function() {
         default: true,
         type: Boolean
     });
-    game.settings.register('NotYourTurn','nonComat', {
+    game.settings.register('NotYourTurn','nonCombat', {
         name: "nonCombat",
         scope: "world",
         config: false,
         default: false,
+        type: Boolean
+    });
+    game.settings.register('NotYourTurn','enable', {
+        name: "enable",
+        scope: "world",
+        config: false,
+        default: true,
         type: Boolean
     });
 }

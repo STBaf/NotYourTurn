@@ -1,4 +1,9 @@
 # Changelog
+### v1.1.4 - 25-02-2021
+Additions
+-Added control button to quickly enable or disable movement blocking during combat
+-Added hooks and hook listeners for external module integration
+
 ### v1.1.3 - 01-02-2021
 Bug fixes
 -'Block Movement' control button would stop working after a scene change
