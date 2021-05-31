@@ -2,12 +2,12 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "author": "CDeenen",
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,
     "minimumCoreVersion": "0.6.6",
-    "compatibleCoreVersion": "0.7.9",
+    "compatibleCoreVersion": "0.8.6",
     "languages": [
       {
         "lang": "en",
