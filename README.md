@@ -48,7 +48,7 @@ The operation of the module can be modified in the module settings. Here is an o
 ![moduleSettings](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 0.7.9<br>
+<b>Foundry VTT:</b> Tested on 0.7.9 - 0.8.6<br>
 <b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback

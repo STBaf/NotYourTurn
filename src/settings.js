@@ -59,6 +59,14 @@ export const registerSettings = function() {
         default: true,
         type: Boolean
     });
+    game.settings.register('NotYourTurn','AlwaysBlock', {
+        name: "NotYourTurn.AlwaysBlock",
+        hint: "NotYourTurn.AlwaysBlock_Hint",
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean
+    });
     game.settings.register('NotYourTurn','nonCombat', {
         name: "nonCombat",
         scope: "world",

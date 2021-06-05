@@ -1,5 +1,15 @@
 import {duplicateCheck,setDuplicateCheck,setDialogWait,setGMwait,setTimer} from "../NotYourTurn.js";
 
+export function compatibleCore(compatibleVersion){
+    let coreVersion = game.data.version;
+    coreVersion = coreVersion.split(".");
+    compatibleVersion = compatibleVersion.split(".");
+    if (compatibleVersion[0] > coreVersion[0]) return false;
+    if (compatibleVersion[1] > coreVersion[1]) return false;
+    if (compatibleVersion[2] > coreVersion[2]) return false;
+    return true;
+  }
+
 export function checkCombat(){
     if (game.combat) 
         return game.combat.started;

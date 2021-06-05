@@ -1,4 +1,11 @@
 # Changelog
+### v1.1.5 - 31-05-2021
+Additions:
+-Added option to always block combat movement, even when it's the token's turn
+
+Other:
+-Added compatibility for Foundry 0.8.6
+
 ### v1.1.4 - 25-02-2021
 Additions
 -Added control button to quickly enable or disable movement blocking during combat

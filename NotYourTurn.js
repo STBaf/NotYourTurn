@@ -4,7 +4,7 @@
  */
 
 import {registerSettings} from "./src/settings.js";
-import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
+import {compatibleCore, checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
 
 new Date();
 let timer = 0; 
@@ -131,14 +131,17 @@ Hooks.on('controlToken', (token,controlled)=>{
 });
 
 
-Hooks.on('updateToken',(scene,data,update,options,userId)=>{
+Hooks.on('updateToken',(a,b,c,d,e)=>{
+    const updateData = compatibleCore('0.8.6') ? b : c;
+    const userId = compatibleCore('0.8.6') ? d : e;
+
+    //Check if movement has been updated
+    if (updateData.x == undefined && updateData.y == undefined) return;
+
     //To prevent the dialog from appearing multiple times, set a timer
     if (duplicateCheck == true) 
         return;
     
-    //Check if movement has been updated
-    if (update.x == undefined && update.y == undefined) return;
-
     //Check if client controls the token
     if (userId != game.userId) return;
 
@@ -151,26 +154,30 @@ Hooks.on('updateToken',(scene,data,update,options,userId)=>{
     if (count < controlledTokens.length) return;
     count = 0;
     duplicateCheck = true;
-    blockMovement(data);
+    blockMovement(updateData);
 });
 //if (game.settings.get('NotYourTurn','enable') == false) return;
 async function blockMovement(data){
     //Get the token shift
     let token = canvas.tokens.children[0].children.find(p => p.id == data._id);
-    let movementShift = {x: data.x-token.x, y: data.y-token.y};
-    
+
+    let movementShift = {
+        x: isNaN(data.x) ? 0 : data.x-token.x, 
+        y: isNaN(data.y) ? 0 : data.y-token.y
+    };
     let counter = 0;
     let tokens = [];
     //Add controlled tokens to the combatants array, except the token whose turn it is, or tokens that are not in combat is nonCombat is true
     for (let i=0; i<controlledTokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == controlledTokens[i]);
         let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
-        if (checkCombat() && dialogWait == false){
-            if (game.combat.combatant.tokenId == controlledTokens[i]){ 
+        if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
+            const combatTokenId = compatibleCore('0.8.6') ? game.combat.combatant.token.id : game.combat.combatant.tokenId;
+            if (combatTokenId == controlledTokens[i]){ 
                 await token.setFlag('NotYourTurn','location',location);
                 continue;
             }
-            let isCombatant = game.combat.combatants.find(p => p.tokenId == controlledTokens[i]);
+            let isCombatant = compatibleCore('0.8.6') ? game.combat.combatants.find(p => p.token.id == controlledTokens[i]) : game.combat.combatants.find(p => p.tokenId == controlledTokens[i]);
             if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false){
                 await token.setFlag('NotYourTurn','location',location);
                 continue;
@@ -292,10 +299,11 @@ async function blockMovement(data){
                     dialogWait = false;
                 }  
                 else if (applyChanges == 2) { //request movement
+                    const users = compatibleCore('0.8.6') ? game.users.contents : game.users.entries;
                     //Request movement from GM, then apply movement (GM can undo this)   
                     for (let i=0; i<game.data.users.length; i++)
-                        if (game.users.entries[i].role > 2) {
-                            if (game.users.entries[i].viewedScene == canvas.scene.id){
+                        if (users[i].role > 2) {
+                            if (users[i].viewedScene == canvas.scene.id){
                                 GMwait = true;
                                 duplicateCheck = false;
                                 dialogWait = false;
