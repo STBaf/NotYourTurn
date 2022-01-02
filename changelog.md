@@ -1,6 +1,6 @@
 # Changelog
 ### v1.2.0 - 02-01-2022
--Changes for compatibility with Foundry v9
+-Changes for compatibility Foundry v9
 
 ### v1.1.5 - 31-05-2021
 Additions:
