@@ -1,15 +1,5 @@
 import {duplicateCheck,setDuplicateCheck,setDialogWait,setGMwait,setTimer} from "../NotYourTurn.js";
 
-export function compatibleCore(compatibleVersion){
-    let coreVersion = game.data.version;
-    coreVersion = coreVersion.split(".");
-    compatibleVersion = compatibleVersion.split(".");
-    if (compatibleVersion[0] > coreVersion[0]) return false;
-    if (compatibleVersion[1] > coreVersion[1]) return false;
-    if (compatibleVersion[2] > coreVersion[2]) return false;
-    return true;
-  }
-
 export function checkCombat(){
     if (game.combat) 
         return game.combat.started;
@@ -31,7 +21,7 @@ export async function storeAllPositions(){
     for (let i=0; i<tokens.length; i++){
         let token = tokens[i];
         let position = tokens[i]._validPosition;
-        await token.setFlag('NotYourTurn','location',position);
+        await token.document.setFlag('NotYourTurn','location',position);
     }
 }
 
@@ -39,8 +29,8 @@ export async function setTokenPositionOld(tokens){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
         let position = tokens[i].locationOld;
-        await token.update(position);
-        await token.setFlag('NotYourTurn','location',position);
+        await token.document.update(position);
+        await token.document.setFlag('NotYourTurn','location',position);
     }
 }
 
@@ -48,8 +38,8 @@ export async function setTokenPositionNew(tokens){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
         let position = tokens[i].location;
-        await token.update(position);
-        await token.setFlag('NotYourTurn','location',position);
+        await token.document.update(position);
+        await token.document.setFlag('NotYourTurn','location',position);
     }
 }
 
