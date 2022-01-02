@@ -4,7 +4,7 @@
  */
 
 import {registerSettings} from "./src/settings.js";
-import {compatibleCore, checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
+import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
 
 new Date();
 let timer = 0; 
@@ -106,7 +106,7 @@ async function setNonCombat(value){
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled) {
         
-        token.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
+        token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
                 return;
@@ -132,8 +132,8 @@ Hooks.on('controlToken', (token,controlled)=>{
 
 
 Hooks.on('updateToken',(a,b,c,d,e)=>{
-    const updateData = compatibleCore('0.8.6') ? b : c;
-    const userId = compatibleCore('0.8.6') ? d : e;
+    const updateData = b;
+    const userId = d;
 
     //Check if movement has been updated
     if (updateData.x == undefined && updateData.y == undefined) return;
@@ -172,19 +172,19 @@ async function blockMovement(data){
         let token = canvas.tokens.children[0].children.find(p => p.id == controlledTokens[i]);
         let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
         if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
-            const combatTokenId = compatibleCore('0.8.6') ? game.combat.combatant.token.id : game.combat.combatant.tokenId;
+            const combatTokenId = game.combat.combatant.token.id;
             if (combatTokenId == controlledTokens[i]){ 
-                await token.setFlag('NotYourTurn','location',location);
+                await token.document.setFlag('NotYourTurn','location',location);
                 continue;
             }
-            let isCombatant = compatibleCore('0.8.6') ? game.combat.combatants.find(p => p.token.id == controlledTokens[i]) : game.combat.combatants.find(p => p.tokenId == controlledTokens[i]);
+            let isCombatant = game.combat.combatants.find(p => p.token.id == controlledTokens[i]);
             if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false){
-                await token.setFlag('NotYourTurn','location',location);
+                await token.document.setFlag('NotYourTurn','location',location);
                 continue;
             }
         }
         const tokenName = token.name;
-        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: token.getFlag('NotYourTurn','location')};
+        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: token.document.getFlag('NotYourTurn','location')};
         counter++;
     }
 
@@ -299,7 +299,7 @@ async function blockMovement(data){
                     dialogWait = false;
                 }  
                 else if (applyChanges == 2) { //request movement
-                    const users = compatibleCore('0.8.6') ? game.users.contents : game.users.entries;
+                    const users = game.users.contents;
                     //Request movement from GM, then apply movement (GM can undo this)   
                     for (let i=0; i<game.data.users.length; i++)
                         if (users[i].role > 2) {
