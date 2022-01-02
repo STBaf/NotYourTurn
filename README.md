@@ -48,7 +48,8 @@ The operation of the module can be modified in the module settings. Here is an o
 ![moduleSettings](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 0.7.9 - 9.238<br>
+<b>Foundry VTT:</b> Tested on 9.238<br>
+For support of Foundry Version 0.7.9 - 0.8.6 use earlier version 1.1.5 of this module<br>
 <b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback
