@@ -55,7 +55,7 @@ The operation of the module can be modified in the module settings. Here is an o
 If you have any suggestions or bugs to report, feel free to contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
 
 ## Credits
-<b>Actual Auther:</b> STB (STB#9841 on Discord)<br>
+<b>Actual Author:</b> STB (STB#9841 on Discord)<br>
 <b>Original Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
 
 ### Localization
