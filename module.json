@@ -3,7 +3,7 @@
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
     "version": "1.2.0",
-    "author": "STBaf (STB#9841)",
+    "author": "CDeenen",
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,
     "minimumCoreVersion": "9.0",
@@ -25,7 +25,7 @@
         "path": "lang/fr.json"
         }
     ],
-    "url": "https://github.com/STBaf/NotYourTurn",
-    "manifest": "https://raw.githubusercontent.com/STBaf/NotYourTurn/master/module.json",
-    "download": "https://github.com/STBaf/NotYourTurn/archive/master.zip"
+    "url": "https://github.com/CDeenen/NotYourTurn",
+    "manifest": "https://raw.githubusercontent.com/CDeenen/NotYourTurn/master/module.json",
+    "download": "https://github.com/CDeenen/NotYourTurn/archive/master.zip"
   }
