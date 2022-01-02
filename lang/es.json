@@ -22,6 +22,8 @@
     "NotYourTurn.RequestButton_Hint": "Permite a los jugadores solicitar al GM permiso para moverse",
     "NotYourTurn.ChatMessage": "Mensajes del Chat",
     "NotYourTurn.ChatMessages_Hint": "Crea un mensaje en el chat cuando se mueve un icono y no es su turno, siempre que se activen las opciones 'Avisar Solo' o 'Cuadro de Diálogo'",
+    "NotYourTurn.AlwaysBlock": "En combate bloquear siempre el movimiento",
+    "NotYourTurn.AlwaysBlock_Hint": "En combate bloquear siempre el movimiento, incluso si es el turno del icono",
     
     "NotYourTurn.Dialog_Title": "¡No es tu turno!",
     "NotYourTurn.Dialog_Text": "Estás intentando moverte, pero no es tu turno",
@@ -44,5 +46,7 @@
 
     "NotYourTurn.And": " y ",
 
-    "NotYourTurn.ControlBtn": "Bloquear Movimiento"
+    "NotYourTurn.ControlBtn": "Bloquear Movimiento",
+
+    "NotYourTurn.Enable": "Bloquear movimiento en combate"
 }
