@@ -1,4 +1,7 @@
 # Changelog
+### v1.2.1 - 03-01-2022
+Maintainer change. Corresponding changes to Readme and manifest.
+
 ### v1.2.0 - 02-01-2022
 Changes for compatibility Foundry v9
 

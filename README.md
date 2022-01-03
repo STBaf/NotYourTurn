@@ -19,7 +19,7 @@ The dialog box contains the following options:<br>
 <li><b>Request</b> - Request the GM to move the token further</li>
 </ul>
 
-![dialog](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/Dialog.png)
+![dialog](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/Dialog.png)
 
 If the request button is pressed, a dialog box appears for the GM, with the following options:<br>
 <ul>
@@ -27,7 +27,7 @@ If the request button is pressed, a dialog box appears for the GM, with the foll
 <li><b>Decline</b> - Declines the request and returns the token to its start position</li>
 </ul>
 
-![request](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/Request.png)
+![request](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/Request.png)
 
 ### Control Buttons
 There are 2 'Not Your Turn' control buttons:
@@ -45,7 +45,7 @@ The operation of the module can be modified in the module settings. Here is an o
 <li><b>Chat Messages</b> - Creates a chat message whenever a non-gm user either: presses the 'Ignore' button, or moves a token when it's not their turn and 'Turn Block' is set to 'Warning Only'</li>
 </ul>
 
-![moduleSettings](https://github.com/CDeenen/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
+![moduleSettings](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
 <b>Foundry VTT:</b> Tested on 9.238<br>
@@ -53,17 +53,16 @@ For support of Foundry Version 0.7.9 - 0.8.6 use earlier version 1.1.5 of this m
 <b>Module Incompatibilities:</b> None known<br>
 
 ## Feedback
-If you have any suggestions or bugs to report, feel free to contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
+If you have any suggestions or bugs to report, feel free to contact me on Discord (STB#9841), or send me an email: andre@stbaf.de.<br>
+Please contact only the actual maintainer, not the previous authors regarding this module.
 
 ## Credits
-<b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
-<b>v9 Compatibility:</b> Andre / STB (STB#9841 on Discord)<br>
+<b>Author / Maintainer:</b> Andre / STB (STB#9841 on Discord)<br>
+Original author (and done most of work) of this module was Cristian Deenen (Cris#6864 on Discord). Thanks for all the fantastic work on this module!<br>
 
 ### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br>
 <b>French:</b> Maxtor
-
-<br>Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>.
 
 ## Abandonment
 Abandoned modules are a (potential) problem for Foundry, because users and/or other modules might rely on abandoned modules, which might break in future Foundry updates.<br>
