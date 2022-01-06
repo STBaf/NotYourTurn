@@ -1,0 +1,49 @@
+{
+    "NotYourTurn.Player": "Giocatore",
+    "NotYourTurn.Trusted": "Fidato",
+    "NotYourTurn.Assistant": "Assistente",
+    "NotYourTurn.Gamemaster": "Gamemaster",
+    "NotYourTurn.Mode_Hint": "Determina il comportamento quando il token viene spostato quando non è il suo turno per ogni livello di autorizzazione",
+    "NotYourTurn.Mode_Off": "Spento",
+    "NotYourTurn.Mode_WarningOnly": "Solo Avvisi",
+    "NotYourTurn.Mode_Dialogbox": "Finestra di Dialogo",
+    "NotYourTurn.Mode_Autoblock": "Autoblocco",
+    "NotYourTurn.IgnoreButton": "Pulsante Ignora",
+    "NotYourTurn.IgnoreButton_Hint": "Determina chi può vedere il pulsante Ignora nella finestra di dialogo",
+    "NotYourTurn.Ignore_Everyone": "Tutti",
+    "NotYourTurn.Ignore_Trusted": "Fidati in Su",
+    "NotYourTurn.Ignore_Assistants": "Assistenti in Su",
+    "NotYourTurn.Ignore_Gamemaster": "Solo Gamemaster",
+    "NotYourTurn.Ignore_Nobody": "Nessuno",
+    "NotYourTurn.RequestButton": "Pulsante Richiesta GM",
+    "NotYourTurn.RequestButton_Hint": "Consenti ai giocatori di richiedere al GM di permettere il movimento",
+    "NotYourTurn.ChatMessage": "Messaggi in Chat",
+    "NotYourTurn.ChatMessages_Hint": "Crea un messaggio in chat quando un token viene spostato quando non è il suo turno se impostato su 'solo avvisi' o 'finestra di dialogo'",
+    "NotYourTurn.AlwaysBlock": "Blocca Sempre il Movimento del Combattente",
+    "NotYourTurn.AlwaysBlock_Hint": "Blocca sempre il movimento in combattimento, anche quando è il turno del token",
+    
+    "NotYourTurn.Dialog_Title": "Non è il tuo turno!",
+    "NotYourTurn.Dialog_Text": "Stai cercando di muoverti, ma non è il tuo turno",
+    "NotYourTurn.Dialog_UndoBtn": "Annulla",
+    "NotYourTurn.Dialog_IgnoreBtn": "Ignora",
+    "NotYourTurn.Dialog_RequestBtn": "Richiedi",
+
+    "NotYourTurn.Request_Title": "Richiesta di Movimento",
+    "NotYourTurn.Request_Text1": "Giocatore '",
+    "NotYourTurn.Request_Text2": "' ha richiesto di poter muovere un token ",
+    "NotYourTurn.Request_AcceptBtn": "Accetta",
+    "NotYourTurn.Request_DeclineBtn": "Rifiuta",
+
+    "NotYourTurn.UI_Warning": "Non è il tuo turno!",
+    "NotYourTurn.UI_RequestGranted": "Il GM ha accettato la tua richiesta",
+    "NotYourTurn.UI_RequestDeclined": "Il GM ha rifiutato la tua richiesta",
+    "NotYourTurn.UI_GMnotOnScene": "Rifiutato, il GM non è nella stessa scena",
+
+    "NotYourTurn.MovementWhisper": " si è mosso quando non era il suo turno",
+
+    "NotYourTurn.And": " e ",
+
+    "NotYourTurn.ControlBtn": "Blocca Movimento Fuori dal Combattimento",
+
+    "NotYourTurn.Enable": "Blocca Movimento in Combattimento"
+}

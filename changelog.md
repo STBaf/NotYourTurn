@@ -1,4 +1,8 @@
 # Changelog
+### v1.2.2 - 06-01-2022
+Added localisation: Deutsch (German)<br />
+Added localisation: Italian
+
 ### v1.2.1 - 03-01-2022
 Maintainer change. Corresponding changes to Readme and manifest.
 

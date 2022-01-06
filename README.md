@@ -61,8 +61,10 @@ Please contact only the actual maintainer, not the previous authors regarding th
 Original author (and done most of work) of this module was Cristian Deenen (Cris#6864 on Discord). Thanks for all the fantastic work on this module!<br>
 
 ### Localization
-<b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br>
-<b>French:</b> Maxtor
+<b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br />
+<b>French:</b> Maxtor<br />
+<b>German:</b> GenX187 (https://github.com/GenX187)<br />
+<b>Italian:</b> smoothingplane (https://github.com/smoothingplane)
 
 ## Abandonment
 Abandoned modules are a (potential) problem for Foundry, because users and/or other modules might rely on abandoned modules, which might break in future Foundry updates.<br>

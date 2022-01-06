@@ -1,0 +1,49 @@
+{
+    "NotYourTurn.Player": "Spieler",
+    "NotYourTurn.Trusted": "Seriöser Spieler",
+    "NotYourTurn.Assistant": "SL-Assistent",
+    "NotYourTurn.Gamemaster": "Spielleiter",
+    "NotYourTurn.Mode_Hint": "Legt für jede Berechtigungsstufe das Verhalten fest, falls die Figur bewegt wird, obwohl man nicht an der Reihe ist",
+    "NotYourTurn.Mode_Off": "Aus",
+    "NotYourTurn.Mode_WarningOnly": "nur Warnung",
+    "NotYourTurn.Mode_Dialogbox": "Dialogfeld",
+    "NotYourTurn.Mode_Autoblock": "Autoblockierung",
+    "NotYourTurn.IgnoreButton": "Ignorieren-Schaltfläche",
+    "NotYourTurn.IgnoreButton_Hint": "Legt fest, wer die Ignorieren-Schaltfläche im Dialogfeld sehen kann",
+    "NotYourTurn.Ignore_Everyone": "Alle",
+    "NotYourTurn.Ignore_Trusted": "Seriöser Spieler & höher",
+    "NotYourTurn.Ignore_Assistants": "SL-Assistent & höher",
+    "NotYourTurn.Ignore_Gamemaster": "Nur Spielleiter",
+    "NotYourTurn.Ignore_Nobody": "Niemand",
+    "NotYourTurn.RequestButton": "GM-Anfrage-Schaltfläche",
+    "NotYourTurn.RequestButton_Hint": "Den Spielern erlauben, den GM zu bitten, Bewegungen zu erlauben",
+    "NotYourTurn.ChatMessage": "Chat Nachrichten",
+    "NotYourTurn.ChatMessages_Hint": "Erzeugt eine Chat-Nachricht, wenn ein Token verschoben wird, obwohl er nicht an der Reihe ist, wenn er auf 'nur Warnung' oder 'Dialogfenster' eingestellt ist",
+    "NotYourTurn.AlwaysBlock": "Kampfbewegungen immer blockieren",
+    "NotYourTurn.AlwaysBlock_Hint": "Blockiere immer die Kampfbewegung, auch wenn der Spielstein am Zug ist",
+    
+    "NotYourTurn.Dialog_Title": "Du bist nicht an der Reihe!",
+    "NotYourTurn.Dialog_Text": "Du versuchst dich zu bewegen, obwohl du nicht dran bist",
+    "NotYourTurn.Dialog_UndoBtn": "Rückgängig machen",
+    "NotYourTurn.Dialog_IgnoreBtn": "Ignorieren",
+    "NotYourTurn.Dialog_RequestBtn": "Anfrage stellen",
+
+    "NotYourTurn.Request_Title": "Bewegungsanfrage",
+    "NotYourTurn.Request_Text1": "Spieler '",
+    "NotYourTurn.Request_Text2": "' hat angefragt, sein Token zu verschieben ",
+    "NotYourTurn.Request_AcceptBtn": "Akzeptieren",
+    "NotYourTurn.Request_DeclineBtn": "Ablehnen",
+
+    "NotYourTurn.UI_Warning": "Du bist nicht an der Reihe!",
+    "NotYourTurn.UI_RequestGranted": "Der SL hat Deine Anfrage genehmigt",
+    "NotYourTurn.UI_RequestDeclined": "Der SL hat Deine Anfrage abgelehnt",
+    "NotYourTurn.UI_GMnotOnScene": "abgelehnt, der SL ist nicht in der gleichen Szene",
+
+    "NotYourTurn.MovementWhisper": " sich bewegt, als er nicht an der Reihe war",
+
+    "NotYourTurn.And": " und ",
+
+    "NotYourTurn.ControlBtn": "sperre Nicht-Kampf-Bewegung",
+
+    "NotYourTurn.Enable": "sperre Kampf-Bewegung"
+}
