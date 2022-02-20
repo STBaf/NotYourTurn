@@ -20,26 +20,35 @@ export async function storeAllPositions(){
     let tokens = canvas.tokens.children[0].children;
     for (let i=0; i<tokens.length; i++){
         let token = tokens[i];
-        let position = tokens[i]._validPosition;
-        await token.document.setFlag('NotYourTurn','location',position);
+        if (token.isOwner)
+        {
+            let position = tokens[i]._validPosition;
+            await token.document.setFlag('NotYourTurn','location',position);
+        }
     }
 }
 
 export async function setTokenPositionOld(tokens){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
-        let position = tokens[i].locationOld;
-        await token.document.update(position);
-        await token.document.setFlag('NotYourTurn','location',position);
+        if (token.isOwner)
+        {
+            let position = tokens[i].locationOld;
+            await token.document.update(position);
+            await token.document.setFlag('NotYourTurn','location',position);
+        }
     }
 }
 
 export async function setTokenPositionNew(tokens){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
-        let position = tokens[i].location;
-        await token.document.update(position);
-        await token.document.setFlag('NotYourTurn','location',position);
+        if (token.isOwner)
+        {
+            let position = tokens[i].location;
+            await token.document.update(position);
+            await token.document.setFlag('NotYourTurn','location',position);
+        }
     }
 }
 

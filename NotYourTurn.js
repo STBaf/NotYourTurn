@@ -104,7 +104,7 @@ async function setNonCombat(value){
 
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
-    if (controlled) {
+    if (controlled && token.isOwner) {
         
         token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
@@ -173,12 +173,12 @@ async function blockMovement(data){
         let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
         if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
             const combatTokenId = game.combat.combatant.token.id;
-            if (combatTokenId == controlledTokens[i]){ 
+            if (combatTokenId == controlledTokens[i] && token.isOwner){ 
                 await token.document.setFlag('NotYourTurn','location',location);
                 continue;
             }
             let isCombatant = game.combat.combatants.find(p => p.token.id == controlledTokens[i]);
-            if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false){
+            if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false && token.isOwner){
                 await token.document.setFlag('NotYourTurn','location',location);
                 continue;
             }
