@@ -1,6 +1,6 @@
 /* 
  * NotYourTurn
- * Author: Cris#6864
+ * Author: STB#9841, Cris#6864
  */
 
 import {registerSettings} from "./src/settings.js";
