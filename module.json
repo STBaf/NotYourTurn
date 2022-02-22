@@ -2,7 +2,7 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "author": "STB",
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,

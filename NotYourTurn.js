@@ -1,6 +1,6 @@
 /* 
  * NotYourTurn
- * Author: STB#9841, Cris#6864
+ * Author: Cris#6864
  */
 
 import {registerSettings} from "./src/settings.js";
@@ -104,12 +104,9 @@ async function setNonCombat(value){
 
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
-    if (controlled) {
+    if (controlled && token.isOwner) {
         
-        if (token.isOwner)
-        {
-            await token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
-        }
+        token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
                 return;
@@ -132,6 +129,7 @@ Hooks.on('controlToken', (token,controlled)=>{
     }
     
 });
+
 
 Hooks.on('updateToken',(a,b,c,d,e)=>{
     const updateData = b;
