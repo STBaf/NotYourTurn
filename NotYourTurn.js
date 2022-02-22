@@ -104,9 +104,12 @@ async function setNonCombat(value){
 
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
-    if (controlled && token.isOwner) {
+    if (controlled) {
         
-        token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
+        if (token.isOwner)
+        {
+            await token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
+        }
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
                 return;
@@ -129,7 +132,6 @@ Hooks.on('controlToken', (token,controlled)=>{
     }
     
 });
-
 
 Hooks.on('updateToken',(a,b,c,d,e)=>{
     const updateData = b;

@@ -1,4 +1,7 @@
 # Changelog
+### v1.2.4 - 22-02-2022
+Fixes crashing scene in rendering which leads to not all tokens placed correctly when 3+ players are involved in scene change
+
 ### v1.2.3 - 20-02-2022
 Fixes error when saving non-owned token positions due to Foundry permission system
 
