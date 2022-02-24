@@ -16,50 +16,50 @@ export function whisperGM(message){
     }
 }
 
-export async function storeAllPositions(){
+export async function storeAllPositions(map){
     let tokens = canvas.tokens.children[0].children;
     for (let i=0; i<tokens.length; i++){
         let token = tokens[i];
         if (token.isOwner)
         {
             let position = tokens[i]._validPosition;
-            await token.document.setFlag('NotYourTurn','location',position);
+            map.set(token.id, position);
         }
     }
 }
 
-export async function setTokenPositionOld(tokens){
+export async function setTokenPositionOld(tokens, map){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
         if (token.isOwner)
         {
             let position = tokens[i].locationOld;
             await token.document.update(position);
-            await token.document.setFlag('NotYourTurn','location',position);
+            map.set(token.id, position);
         }
     }
 }
 
-export async function setTokenPositionNew(tokens){
+export async function setTokenPositionNew(tokens, map){
     for (let i=0; i<tokens.length; i++){
         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
         if (token.isOwner)
         {
             let position = tokens[i].location;
             await token.document.update(position);
-            await token.document.setFlag('NotYourTurn','location',position);
+            map.set(token.id, position);
         }
     }
 }
 
-export async function undoMovement(tokens){
-    await setTokenPositionOld(tokens);
+export async function undoMovement(tokens, map){
+    await setTokenPositionOld(tokens, map);
     disableMoveKeys(false);
     setDuplicateCheck(false);
     setDialogWait(false);
 }
 
-export function sockets(){
+export function sockets(map){
     game.socket.on(`module.NotYourTurn`, (payload) =>{
         //check if this user is the target, else return
         if (game.userId != payload.receiver) return;
@@ -102,11 +102,11 @@ export function sockets(){
                     let ret;
                     if (applyChanges == 0) {
                         ret = true;
-                        setTokenPositionNew(payload.tokens);
+                        setTokenPositionNew(payload.tokens, map);
                     }
                     else if (applyChanges == 1) {
                         ret = false;
-                        setTokenPositionOld(payload.tokens);
+                        setTokenPositionOld(payload.tokens, map);
                     }
                     let payload2 = {
                         "msgType": "requestMovement_GMack",

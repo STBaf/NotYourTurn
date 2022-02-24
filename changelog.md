@@ -1,4 +1,7 @@
 # Changelog
+### v1.2.6 - 24-02-2022
+Fixes crashing scene in rendering which leads to not all tokens placed correctly when 3+ players are involved in scene change (Second attempt)
+
 ### v1.2.5 - 22-02-2022
 Revert non-working changes
 

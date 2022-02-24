@@ -15,6 +15,7 @@ let GMwait = false;
 let count = 0;
 let warningTimer = 0;
 let warningPeriod = 1000;
+let NYTTokenPositionMap = new Map();
 
 Hooks.on('setNotYourTurn',async(data) => { 
     if (game.user.isGM == false) return;
@@ -26,7 +27,7 @@ Hooks.on('setNotYourTurn',async(data) => {
         await game.settings.set('NotYourTurn','nonCombat',nonCombat);
         ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "blockMovement").active = nonCombat;
         ui.controls.render();  
-        storeAllPositions();
+        storeAllPositions(NYTTokenPositionMap);
     }
     let combat;
     if (data.combat != undefined) {
@@ -36,7 +37,7 @@ Hooks.on('setNotYourTurn',async(data) => {
         await game.settings.set('NotYourTurn','enable',combat);
         ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "enableNotYourTurn").active = combat;
         ui.controls.render(); 
-        storeAllPositions(); 
+        storeAllPositions(NYTTokenPositionMap); 
     }
 });
 
@@ -51,7 +52,8 @@ Hooks.once('ready', ()=>{
 
 Hooks.on("canvasReady",() => {
     controlledTokens = [];
-    storeAllPositions();
+    NYTTokenPositionMap.clear();
+    storeAllPositions(NYTTokenPositionMap);
     let tokens = canvas.tokens.children[0].children;
     for (let i=0; i<tokens.length; i++)
         if (tokens[i]._controlled)
@@ -93,20 +95,20 @@ Hooks.on("getSceneControlButtons", async(controls) => {
 
 async function setEnable(value){
     await game.settings.set('NotYourTurn','enable',value);
-    storeAllPositions();
+    storeAllPositions(NYTTokenPositionMap);
     Hooks.call("NotYourTurn",{enable:value});
 }
 async function setNonCombat(value){
     await game.settings.set('NotYourTurn','nonCombat',value);
-    storeAllPositions();
+    storeAllPositions(NYTTokenPositionMap);
     Hooks.call("NotYourTurn",{nonCombat:value});
 }
 
 //Register the token position
 Hooks.on('controlToken', (token,controlled)=>{
     if (controlled && token.isOwner) {
-        
-        token.document.setFlag('NotYourTurn','location',{x:token.x,y:token.y});
+                
+        NYTTokenPositionMap.set(token.id, {x:token.x,y:token.y});
         for (let i=0; i<controlledTokens.length; i++)
             if (controlledTokens[i] == token.id)
                 return;
@@ -156,7 +158,7 @@ Hooks.on('updateToken',(a,b,c,d,e)=>{
     duplicateCheck = true;
     blockMovement(updateData);
 });
-//if (game.settings.get('NotYourTurn','enable') == false) return;
+
 async function blockMovement(data){
     //Get the token shift
     let token = canvas.tokens.children[0].children.find(p => p.id == data._id);
@@ -174,17 +176,17 @@ async function blockMovement(data){
         if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
             const combatTokenId = game.combat.combatant.token.id;
             if (combatTokenId == controlledTokens[i] && token.isOwner){ 
-                await token.document.setFlag('NotYourTurn','location',location);
+                NYTTokenPositionMap.set(token.id, location);
                 continue;
             }
             let isCombatant = game.combat.combatants.find(p => p.token.id == controlledTokens[i]);
             if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false && token.isOwner){
-                await token.document.setFlag('NotYourTurn','location',location);
+                NYTTokenPositionMap.set(token.id, location);
                 continue;
             }
         }
         const tokenName = token.name;
-        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: token.document.getFlag('NotYourTurn','location')};
+        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: NYTTokenPositionMap.get(token.id)};
         counter++;
     }
 
@@ -196,7 +198,7 @@ async function blockMovement(data){
 
     //If the dialog box is open, prevent user from moving other tokens
     if (dialogWait || GMwait){
-        await setTokenPositionOld(tokens);
+        await setTokenPositionOld(tokens, NYTTokenPositionMap);
         duplicateCheck = false;
         return;
     }
@@ -212,7 +214,7 @@ async function blockMovement(data){
     
     //Check if autoblock applies, which will automatically force the token back to its original position
     if (blockSett == 3){
-        await setTokenPositionOld(tokens);
+        await setTokenPositionOld(tokens, NYTTokenPositionMap);
         if (Date.now()-warningTimer > warningPeriod) {
             ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
             warningTimer = Date.now();
@@ -225,7 +227,7 @@ async function blockMovement(data){
         let names = "";
         for (let i=0; i<tokens.length; i++){
             let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
-            setTokenPositionNew(tokens);
+            setTokenPositionNew(tokens, NYTTokenPositionMap);
             names += "'" + token.name + "'";
             if (i+2 == tokens.length) names += game.i18n.localize("NotYourTurn.And");
             else if (i+1 == tokens.length) names += " ";
@@ -285,7 +287,7 @@ async function blockMovement(data){
                 else if (applyChanges == 1) { //ignore
                     let names = "";
                     for (let i=0; i<tokens.length; i++){
-                        setTokenPositionNew(tokens);
+                        setTokenPositionNew(tokens, NYTTokenPositionMap);
                         let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
                         names += "'" + token.name + "'";
                         if (i+2 == tokens.length) names += " and ";
