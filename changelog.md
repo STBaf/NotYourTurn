@@ -1,4 +1,7 @@
 # Changelog
+### v1.2.7 - 15-03-2022
+Fixes issue 26 - Movement becomes bugged after first pop-up window for player
+
 ### v1.2.6 - 24-02-2022
 Fixes crashing scene in rendering which leads to not all tokens placed correctly when 3+ players are involved in scene change (Second attempt)
 

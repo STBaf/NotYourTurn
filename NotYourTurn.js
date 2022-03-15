@@ -47,7 +47,7 @@ Hooks.once('init', function(){
 
 Hooks.once('ready', ()=>{
     timer = Date.now();
-    sockets();
+    sockets(NYTTokenPositionMap);
 });
 
 Hooks.on("canvasReady",() => {
@@ -281,7 +281,7 @@ async function blockMovement(data){
             close: html => {
                 //If 'Undo' is pressed, move token back to previous position
                 if (applyChanges == 0){ //undo
-                    undoMovement(tokens);
+                    undoMovement(tokens, NYTTokenPositionMap);
                 }
                 //If 'Ignore' is pressed, continue movement
                 else if (applyChanges == 1) { //ignore
@@ -324,7 +324,7 @@ async function blockMovement(data){
                             else {
                                 ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_GMnotOnScene"));
                                 GMwait = false;
-                                undoMovement(tokens);
+                                undoMovement(tokens, NYTTokenPositionMap);
                             }
                             break;
                         }
