@@ -45,6 +45,6 @@
       }
     ],
     "url": "https://github.com/STBaf/NotYourTurn",
-    "manifest": "https://raw.githubusercontent.com/STBaf/NotYourTurn/v2.0.0/module.json",
-    "download": "https://github.com/STBaf/NotYourTurn/archive/v2.0.0.zip"
+    "manifest": "https://raw.githubusercontent.com/STBaf/NotYourTurn/master/module.json",
+    "download": "https://github.com/STBaf/NotYourTurn/archive/master.zip"
   }

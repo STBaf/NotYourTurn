@@ -19,7 +19,7 @@ The dialog box contains the following options:<br>
 <li><b>Request</b> - Request the GM to move the token further</li>
 </ul>
 
-![dialog](https://github.com/STBaf/NotYourTurn/blob/v2.0.0/img/examples/Dialog.png)
+![dialog](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/Dialog.png)
 
 If the request button is pressed, a dialog box appears for the GM, with the following options:<br>
 <ul>
@@ -27,7 +27,7 @@ If the request button is pressed, a dialog box appears for the GM, with the foll
 <li><b>Decline</b> - Declines the request and returns the token to its start position</li>
 </ul>
 
-![request](https://github.com/STBaf/NotYourTurn/blob/v2.0.0/img/examples/Request.png)
+![request](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/Request.png)
 
 ### Control Buttons
 There are 2 'Not Your Turn' control buttons:
@@ -45,7 +45,7 @@ The operation of the module can be modified in the module settings. Here is an o
 <li><b>Chat Messages</b> - Creates a chat message whenever a non-gm user either: presses the 'Ignore' button, or moves a token when it's not their turn and 'Turn Block' is set to 'Warning Only'</li>
 </ul>
 
-![moduleSettings](https://github.com/STBaf/NotYourTurn/blob/v2.0.0/img/examples/ModuleSettings.png)
+![moduleSettings](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
 <b>Foundry VTT:</b> Tested on 10.283<br>
