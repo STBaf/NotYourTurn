@@ -4,7 +4,7 @@
  */
 
 import {registerSettings} from "./src/settings.js";
-import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
+import {checkCombat, whisperGM, sockets, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
 
 new Date();
 let timer = 0; 
@@ -17,7 +17,7 @@ let warningTimer = 0;
 let warningPeriod = 1000;
 let NYTTokenPositionMap = new Map();
 
-Hooks.on('setNotYourTurn',async(data) => { 
+Hooks.on('NotYourTurn',async(data) => { 
     if (game.user.isGM == false) return;
     let nonCombat;
     if (data.nonCombat != undefined) {
@@ -38,6 +38,12 @@ Hooks.on('setNotYourTurn',async(data) => {
         ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "enableNotYourTurn").active = combat;
         ui.controls.render(); 
         storeAllPositions(NYTTokenPositionMap); 
+    }
+});
+
+Hooks.on('updateSetting', async(setting, value, diff, key) => {
+    if ((setting.key == 'NotYourTurn.nonCombat' || setting.key == 'NotYourTurn.enable') && setting.value == true) {
+        storeAllPositions(NYTTokenPositionMap);
     }
 });
 
@@ -138,22 +144,28 @@ Hooks.on('updateToken',(a,b,c,d,e)=>{
     const userId = d;
 
     //Check if movement has been updated
-    if (updateData.x == undefined && updateData.y == undefined) return;
+    if (updateData.x == undefined && updateData.y == undefined) {
+         return;
+    }
 
     //To prevent the dialog from appearing multiple times, set a timer
-    if (duplicateCheck == true) 
+    if (duplicateCheck == true)
+    { 
         return;
-    
+    }
+
     //Check if client controls the token
-    if (userId != game.userId) return;
+    if (userId != game.userId) {
+         return;
+    }
 
     //Check if there is combat, or if nonCombat block is on
-    if (checkCombat() == false && game.settings.get('NotYourTurn','nonCombat') == false) return;
-    if (checkCombat() && game.settings.get('NotYourTurn','enable') == false) return;
+    if (checkCombat() == false && game.settings.get('NotYourTurn','nonCombat') == false) { return };
+    if (checkCombat() && game.settings.get('NotYourTurn','enable') == false) { return };
     
     //make sure the next part only happens once, even if you have multiple tokens selected
     count++;
-    if (count < NYTTcontrolledTokens.length) return;
+    if (count < NYTTcontrolledTokens.length) { return };
     count = 0;
     duplicateCheck = true;
     blockMovement(updateData);
@@ -245,8 +257,7 @@ async function blockMovement(data){
     
     //In all other cases, create a dialog box
     else {
-        disableMoveKeys(true);
-        duplicateCheck = false;
+        
         //Create a dialog, with buttons based on the current situation
         let applyChanges = 0;
         let buttons = {
@@ -280,9 +291,11 @@ async function blockMovement(data){
             default: "Undo",
             close: html => {
                 //If 'Undo' is pressed, move token back to previous position
+                
                 if (applyChanges == 0){ //undo
                     undoMovement(tokens, NYTTokenPositionMap);
                 }
+
                 //If 'Ignore' is pressed, continue movement
                 else if (applyChanges == 1) { //ignore
                     let names = "";
@@ -295,15 +308,15 @@ async function blockMovement(data){
                         else names += ", ";
                     }
                     if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3) 
-                        whisperGM(names + game.i18n.localize("NotYourTurn.MovementWhisper"));                                                                                    
-                    disableMoveKeys(false);
+                        whisperGM(names + game.i18n.localize("NotYourTurn.MovementWhisper"));
                     duplicateCheck = false;
                     dialogWait = false;
                 }  
+
                 else if (applyChanges == 2) { //request movement
-                    const users = game.users.contents;
+                    let users = game.users.contents;
                     //Request movement from GM, then apply movement (GM can undo this)   
-                    for (let i=0; i<game.users.length; i++)
+                    for (let i=0; i < users.length; i++)
                         if (users[i].role > 2) {
                             if (users[i].viewedScene == canvas.scene.id){
                                 GMwait = true;
@@ -312,7 +325,7 @@ async function blockMovement(data){
                                 let payload = {
                                     "msgType": "requestMovement",
                                     "sender": game.userId, 
-                                    "receiver": game.users[i]._id, 
+                                    "receiver": users[i].id, 
                                     "tokens": tokens,
                                     "scene": {
                                         id: canvas.scene.id,
@@ -329,6 +342,7 @@ async function blockMovement(data){
                             break;
                         }
                 }
+
             }
         });
         d.render(true); 
