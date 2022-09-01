@@ -1,4 +1,7 @@
 # Changelog
+### v1.2.8 - 01-09-2022
+Preparing update for v10 release - changes to download locations for v9 backward compatiblity
+
 ### v1.2.7 - 15-03-2022
 Fixes issue 26 - Movement becomes bugged after first pop-up window for player
 
