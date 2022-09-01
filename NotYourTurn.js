@@ -9,7 +9,7 @@ import {checkCombat, whisperGM, sockets, disableMoveKeys, storeAllPositions, set
 new Date();
 let timer = 0; 
 export var duplicateCheck = false;
-let controlledTokens = [];
+let NYTTcontrolledTokens = [];
 let dialogWait = false;
 let GMwait = false;
 let count = 0;
@@ -50,14 +50,14 @@ Hooks.once('ready', ()=>{
     sockets(NYTTokenPositionMap);
 });
 
-Hooks.on("canvasReady",() => {
-    controlledTokens = [];
+Hooks.on("activateTokenLayer",() => {
+    NYTTcontrolledTokens = [];
     NYTTokenPositionMap.clear();
     storeAllPositions(NYTTokenPositionMap);
     let tokens = canvas.tokens.children[0].children;
     for (let i=0; i<tokens.length; i++)
         if (tokens[i]._controlled)
-            controlledTokens.push(tokens[i].id);
+            NYTTcontrolledTokens.push(tokens[i].id);
 });
 
 //Register control button
@@ -109,22 +109,22 @@ Hooks.on('controlToken', (token,controlled)=>{
     if (controlled && token.isOwner) {
                 
         NYTTokenPositionMap.set(token.id, {x:token.x,y:token.y});
-        for (let i=0; i<controlledTokens.length; i++)
-            if (controlledTokens[i] == token.id)
+        for (let i=0; i<NYTTcontrolledTokens.length; i++)
+            if (NYTTcontrolledTokens[i] == token.id)
                 return;
 
-        let length = controlledTokens.length+1;
+        let length = NYTTcontrolledTokens.length+1;
         for (let i=0; i<length; i++){
-            if (controlledTokens[i] == undefined){
-                controlledTokens[i] = token.id;
+            if (NYTTcontrolledTokens[i] == undefined){
+                NYTTcontrolledTokens[i] = token.id;
                 return;
             }
         }   
     }
     else {
-        for (let i=0; i<controlledTokens.length; i++){
-            if (controlledTokens[i] == token.id){
-                controlledTokens.splice(i,1);
+        for (let i=0; i<NYTTcontrolledTokens.length; i++){
+            if (NYTTcontrolledTokens[i] == token.id){
+                NYTTcontrolledTokens.splice(i,1);
                 return;
             }
         }
@@ -153,7 +153,7 @@ Hooks.on('updateToken',(a,b,c,d,e)=>{
     
     //make sure the next part only happens once, even if you have multiple tokens selected
     count++;
-    if (count < controlledTokens.length) return;
+    if (count < NYTTcontrolledTokens.length) return;
     count = 0;
     duplicateCheck = true;
     blockMovement(updateData);
@@ -170,23 +170,23 @@ async function blockMovement(data){
     let counter = 0;
     let tokens = [];
     //Add controlled tokens to the combatants array, except the token whose turn it is, or tokens that are not in combat is nonCombat is true
-    for (let i=0; i<controlledTokens.length; i++){
-        let token = canvas.tokens.children[0].children.find(p => p.id == controlledTokens[i]);
+    for (let i=0; i<NYTTcontrolledTokens.length; i++){
+        let token = canvas.tokens.children[0].children.find(p => p.id == NYTTcontrolledTokens[i]);
         let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
         if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
             const combatTokenId = game.combat.combatant.token.id;
-            if (combatTokenId == controlledTokens[i] && token.isOwner){ 
+            if (combatTokenId == NYTTcontrolledTokens[i] && token.isOwner){ 
                 NYTTokenPositionMap.set(token.id, location);
                 continue;
             }
-            let isCombatant = game.combat.combatants.find(p => p.token.id == controlledTokens[i]);
+            let isCombatant = game.combat.combatants.find(p => p.token.id == NYTTcontrolledTokens[i]);
             if (isCombatant == undefined && game.settings.get('NotYourTurn','nonCombat') == false && token.isOwner){
                 NYTTokenPositionMap.set(token.id, location);
                 continue;
             }
         }
         const tokenName = token.name;
-        tokens[counter] = {id: controlledTokens[i], name: tokenName, location, locationOld: NYTTokenPositionMap.get(token.id)};
+        tokens[counter] = {id: NYTTcontrolledTokens[i], name: tokenName, location, locationOld: NYTTokenPositionMap.get(token.id)};
         counter++;
     }
 
@@ -204,7 +204,7 @@ async function blockMovement(data){
     }
     
     //Get the block setting, depending on the setting of the user role
-    let role =  game.user.data.role;
+    let role =  game.user.role;
     let blockSett = 0;
     if (role == 1) blockSett = game.settings.get("NotYourTurn","BlockPlayer");
     else if (role == 2) blockSett = game.settings.get("NotYourTurn","BlockTrusted");
@@ -303,7 +303,7 @@ async function blockMovement(data){
                 else if (applyChanges == 2) { //request movement
                     const users = game.users.contents;
                     //Request movement from GM, then apply movement (GM can undo this)   
-                    for (let i=0; i<game.data.users.length; i++)
+                    for (let i=0; i<game.users.length; i++)
                         if (users[i].role > 2) {
                             if (users[i].viewedScene == canvas.scene.id){
                                 GMwait = true;
@@ -312,7 +312,7 @@ async function blockMovement(data){
                                 let payload = {
                                     "msgType": "requestMovement",
                                     "sender": game.userId, 
-                                    "receiver": game.data.users[i]._id, 
+                                    "receiver": game.users[i]._id, 
                                     "tokens": tokens,
                                     "scene": {
                                         id: canvas.scene.id,

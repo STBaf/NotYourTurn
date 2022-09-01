@@ -7,11 +7,11 @@ export function checkCombat(){
 }
 
 export function whisperGM(message){
-    for (let i=0; i<game.data.users.length; i++){
-        if (game.data.users[i].role > 2) 
+    for (let i=0; i<game.users.length; i++){
+        if (game.users[i].role > 2) 
             ChatMessage.create({
                 content: message,
-                whisper: [game.data.users[i]._id]
+                whisper: [game.users[i]._id]
         });                                                                                      
     }
 }
@@ -68,7 +68,7 @@ export function sockets(map){
         if (payload.msgType == "requestMovement"){
         
             //get the name of the requesting user, and his/her token data
-            const user = game.users.get(payload.sender).data.name;
+            const user = game.users.get(payload.sender).name;
 
             //build dialog
             let applyChanges = 0;
