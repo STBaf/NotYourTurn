@@ -7,11 +7,11 @@ export function checkCombat(){
 }
 
 export function whisperGM(message){
-    for (let i=0; i<game.data.users.length; i++){
-        if (game.data.users[i].role > 2) 
+    for (let i=0; i<game.users.length; i++){
+        if (game.users[i].role > 2) 
             ChatMessage.create({
                 content: message,
-                whisper: [game.data.users[i]._id]
+                whisper: [game.users[i]._id]
         });                                                                                      
     }
 }
@@ -21,8 +21,8 @@ export async function storeAllPositions(map){
     for (let i=0; i<tokens.length; i++){
         let token = tokens[i];
         if (token.isOwner)
-        {
-            let position = tokens[i]._validPosition;
+        {            
+            let position = { x: token.x, y: token.y };
             map.set(token.id, position);
         }
     }
@@ -53,8 +53,7 @@ export async function setTokenPositionNew(tokens, map){
 }
 
 export async function undoMovement(tokens, map){
-    await setTokenPositionOld(tokens, map);
-    disableMoveKeys(false);
+    await setTokenPositionOld(tokens, map);    
     setDuplicateCheck(false);
     setDialogWait(false);
 }
@@ -68,7 +67,7 @@ export function sockets(map){
         if (payload.msgType == "requestMovement"){
         
             //get the name of the requesting user, and his/her token data
-            const user = game.users.get(payload.sender).data.name;
+            const user = game.users.get(payload.sender).name;
 
             //build dialog
             let applyChanges = 0;
@@ -124,58 +123,10 @@ export function sockets(map){
             if (payload.ret == true) 
                 ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted")); 
             else 
-                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
-            disableMoveKeys(false);
+                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));            
             setDuplicateCheck(false);
             setGMwait(false);
             setTimer(Date.now());
         }
     });
-}
-
-export function disableMoveKeys(enable){
-    if (enable){
-        game.keyboard.moveKeys.w = "";
-        game.keyboard.moveKeys.a = "";
-        game.keyboard.moveKeys.s = "";
-        game.keyboard.moveKeys.d = "";
-        game.keyboard.moveKeys.W = "";
-        game.keyboard.moveKeys.A = "";
-        game.keyboard.moveKeys.S = "";
-        game.keyboard.moveKeys.D = "";
-        game.keyboard.moveKeys.ArrowUp = "";
-        game.keyboard.moveKeys.ArrowRight = "";
-        game.keyboard.moveKeys.ArrowDown = "";
-        game.keyboard.moveKeys.ArrowLeft = "";
-        game.keyboard.moveKeys.Numpad1 = "";
-        game.keyboard.moveKeys.Numpad2 = "";
-        game.keyboard.moveKeys.Numpad3 = "";
-        game.keyboard.moveKeys.Numpad4 = "";
-        game.keyboard.moveKeys.Numpad6 = "";
-        game.keyboard.moveKeys.Numpad7 = "";
-        game.keyboard.moveKeys.Numpad8 = "";
-        game.keyboard.moveKeys.Numpad9 = "";
-    }
-    else {
-        game.keyboard.moveKeys.w = ["up"];
-        game.keyboard.moveKeys.s = ["down"];
-        game.keyboard.moveKeys.a = ["left"];
-        game.keyboard.moveKeys.d = ["right"];
-        game.keyboard.moveKeys.W = ["up"];
-        game.keyboard.moveKeys.S = ["down"];
-        game.keyboard.moveKeys.A = ["left"];
-        game.keyboard.moveKeys.D = ["right"];
-        game.keyboard.moveKeys.ArrowUp = ["up"];
-        game.keyboard.moveKeys.ArrowRight = ["right"];
-        game.keyboard.moveKeys.ArrowDown = ["down"];
-        game.keyboard.moveKeys.ArrowLeft = ["left"];
-        game.keyboard.moveKeys.Numpad1 = ["down","left"];
-        game.keyboard.moveKeys.Numpad2 = ["down"];
-        game.keyboard.moveKeys.Numpad3 = ["down","right"];
-        game.keyboard.moveKeys.Numpad4 = ["left"];
-        game.keyboard.moveKeys.Numpad6 = ["right"];
-        game.keyboard.moveKeys.Numpad7 = ["up","left"];
-        game.keyboard.moveKeys.Numpad8 = ["up"];
-        game.keyboard.moveKeys.Numpad9 = ["up","right"];
-    }   
 }
