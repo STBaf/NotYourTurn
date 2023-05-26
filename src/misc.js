@@ -16,11 +16,20 @@ export function whisperGM(message){
     }
 }
 
-export async function storeAllPositions(map){
-    let tokens = canvas.tokens.children[0].children;
+export async function storeAllPositions(map, useCanvas)
+{
+    let tokens;
+    let handOverCanvas = useCanvas != undefined;
+    if (handOverCanvas)
+    { 
+        tokens = useCanvas.tokens.ownedTokens
+    } else {
+        tokens = canvas.tokens.children[0].children;
+    }
+    
     for (let i=0; i<tokens.length; i++){
         let token = tokens[i];
-        if (token.isOwner)
+        if (handOverCanvas || token.isOwner)
         {            
             let position = { x: token.x, y: token.y };
             map.set(token.id, position);

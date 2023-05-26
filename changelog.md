@@ -1,4 +1,10 @@
 # Changelog
+
+### v2.1.0 - 26-05-2023
+Update for FoundryVTT v11 stable release
+Changes for parallel v10 and v11 compatibility
+Minor bugfixes
+
 ### v2.0.0 - 01-09-2022
 Update for FoundryVTT v10 stable release
 Minor bugfixes

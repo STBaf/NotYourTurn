@@ -48,7 +48,7 @@ The operation of the module can be modified in the module settings. Here is an o
 ![moduleSettings](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 10.283<br>
+<b>Foundry VTT:</b> Tested on v10 and v11<br>
 For support of Foundry Version 0.7.9 - 9.280 use earlier versions 1.1.5 up to 1.2.8 of this module<br>
 <b>Module Incompatibilities:</b> None known<br>
 
@@ -58,7 +58,7 @@ Please contact only the actual maintainer, not the previous authors regarding th
 
 ## Credits
 <b>Author / Maintainer:</b> Andre / STB (STB#9841 on Discord)<br>
-Original author (and done most of work) of this module was Cristian Deenen (Cris#6864 on Discord). Thanks for all the fantastic work on this module!<br>
+Original author of this module was Cristian Deenen (Cris#6864 on Discord). Thanks for all the fantastic work on this module!<br>
 
 ### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br />
