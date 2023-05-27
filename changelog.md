@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.1.1 - 27-05-2023
+Remove forgotten Debug Switch
+
 ### v2.1.0 - 26-05-2023
 Update for FoundryVTT v11 stable release
 Changes for parallel v10 and v11 compatibility

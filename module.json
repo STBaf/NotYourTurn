@@ -3,7 +3,7 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "authors": [{
       "name": "STB",
       "url": "https://www.stbaf.de",

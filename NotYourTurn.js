@@ -48,8 +48,7 @@ Hooks.on('updateSetting', async(setting, value, diff, key) => {
 });
 
 Hooks.once('init', function(){
-    registerSettings(); //in ./src/settings.js
-    CONFIG.debug.hooks = true;   
+    registerSettings(); //in ./src/settings.js       
 });
 
 Hooks.once('ready', ()=>{
