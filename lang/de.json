@@ -15,12 +15,12 @@
     "NotYourTurn.Ignore_Assistants": "SL-Assistent & höher",
     "NotYourTurn.Ignore_Gamemaster": "Nur Spielleiter",
     "NotYourTurn.Ignore_Nobody": "Niemand",
-    "NotYourTurn.RequestButton": "GM-Anfrage-Schaltfläche",
-    "NotYourTurn.RequestButton_Hint": "Den Spielern erlauben, den GM zu bitten, Bewegungen zu erlauben",
-    "NotYourTurn.ChatMessage": "Chat Nachrichten",
-    "NotYourTurn.ChatMessages_Hint": "Erzeugt eine Chat-Nachricht, wenn ein Token verschoben wird, obwohl er nicht an der Reihe ist, wenn er auf 'nur Warnung' oder 'Dialogfenster' eingestellt ist",
+    "NotYourTurn.RequestButton": "SL-Anfrage Schaltfläche",
+    "NotYourTurn.RequestButton_Hint": "Den Spielern erlauben, den SL zu bitten, Bewegungen zu erlauben",
+    "NotYourTurn.ChatMessage": "Chatnachrichten",
+    "NotYourTurn.ChatMessages_Hint": "Erzeugt eine Chatnachricht, wenn ein Token verschoben wird, obwohl er nicht an der Reihe ist, wenn er auf 'nur Warnung' oder 'Dialogfenster' eingestellt ist",
     "NotYourTurn.AlwaysBlock": "Kampfbewegungen immer blockieren",
-    "NotYourTurn.AlwaysBlock_Hint": "Blockiere immer die Kampfbewegung, auch wenn der Spielstein am Zug ist",
+    "NotYourTurn.AlwaysBlock_Hint": "Blockiere immer die Kampfbewegung, auch wenn der Spieler am Zug ist",
     
     "NotYourTurn.Dialog_Title": "Du bist nicht an der Reihe!",
     "NotYourTurn.Dialog_Text": "Du versuchst dich zu bewegen, obwohl du nicht dran bist",
@@ -30,20 +30,20 @@
 
     "NotYourTurn.Request_Title": "Bewegungsanfrage",
     "NotYourTurn.Request_Text1": "Spieler '",
-    "NotYourTurn.Request_Text2": "' hat angefragt, sein Token zu verschieben ",
-    "NotYourTurn.Request_AcceptBtn": "Akzeptieren",
+    "NotYourTurn.Request_Text2": "' hat angefragt, seinen Token zu verschieben ",
+    "NotYourTurn.Request_AcceptBtn": "Genehmigen",
     "NotYourTurn.Request_DeclineBtn": "Ablehnen",
 
     "NotYourTurn.UI_Warning": "Du bist nicht an der Reihe!",
-    "NotYourTurn.UI_RequestGranted": "Der SL hat Deine Anfrage genehmigt",
-    "NotYourTurn.UI_RequestDeclined": "Der SL hat Deine Anfrage abgelehnt",
-    "NotYourTurn.UI_GMnotOnScene": "abgelehnt, der SL ist nicht in der gleichen Szene",
+    "NotYourTurn.UI_RequestGranted": "Der SL hat deine Anfrage genehmigt",
+    "NotYourTurn.UI_RequestDeclined": "Der SL hat deine Anfrage abgelehnt",
+    "NotYourTurn.UI_GMnotOnScene": "Abgelehnt, da sich der SL nicht in der gleichen Szene befindet",
 
-    "NotYourTurn.MovementWhisper": " sich bewegt, als er nicht an der Reihe war",
+    "NotYourTurn.MovementWhisper": " hat sich bewegt, obwohl sie/er nicht an der Reihe war",
 
     "NotYourTurn.And": " und ",
 
-    "NotYourTurn.ControlBtn": "sperre Nicht-Kampf-Bewegung",
+    "NotYourTurn.ControlBtn": "Sperre Bewegungen außerhalb des Kampfes",
 
-    "NotYourTurn.Enable": "sperre Kampf-Bewegung"
+    "NotYourTurn.Enable": "Sperre Bewegungen während des Kampfes"
 }
