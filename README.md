@@ -57,13 +57,13 @@ If you have any suggestions or bugs to report, feel free to contact me on Discor
 Please contact only the actual maintainer, not the previous authors regarding this module.
 
 ## Credits
-<b>Author / Maintainer:</b> Andre / STB (STB#9841 on Discord)<br>
+<b>Author / Maintainer:</b> Andre / STB (stbaf on Discord (old: STB#9841))<br>
 Original author of this module was Cristian Deenen (Cris#6864 on Discord). Thanks for all the fantastic work on this module!<br>
 
 ### Localization
 <b>Spanish:</b> Lozalojo (https://github.com/lozalojo)<br />
 <b>French:</b> Maxtor<br />
-<b>German:</b> GenX187 (https://github.com/GenX187)<br />
+<b>German:</b> GenX187 (https://github.com/GenX187) and RadicalEd (https://github.com/marcel-wiechmann)<br />
 <b>Italian:</b> smoothingplane (https://github.com/smoothingplane)
 
 ## Abandonment

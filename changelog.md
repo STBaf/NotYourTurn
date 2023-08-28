@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.1.2 - 28-08-2023
+German translation revision contributed by RadicalEd - thanks!
+
 ### v2.1.1 - 27-05-2023
 Remove forgotten Debug Switch
 
