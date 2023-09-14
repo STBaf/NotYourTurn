@@ -24,7 +24,7 @@ export async function storeAllPositions(map, useCanvas)
     { 
         tokens = useCanvas.tokens.ownedTokens
     } else {
-        tokens = canvas.tokens.children[0].children;
+        tokens = AllocateCorrectTokenLayerOnCanvas(canvas).children;
     }
     
     for (let i=0; i<tokens.length; i++){
@@ -39,7 +39,7 @@ export async function storeAllPositions(map, useCanvas)
 
 export async function setTokenPositionOld(tokens, map){
     for (let i=0; i<tokens.length; i++){
-        let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+        let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == tokens[i].id);
         if (token.isOwner)
         {
             let position = tokens[i].locationOld;
@@ -51,7 +51,7 @@ export async function setTokenPositionOld(tokens, map){
 
 export async function setTokenPositionNew(tokens, map){
     for (let i=0; i<tokens.length; i++){
-        let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+        let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == tokens[i].id);
         if (token.isOwner)
         {
             let position = tokens[i].location;
@@ -138,4 +138,9 @@ export function sockets(map){
             setTimer(Date.now());
         }
     });
+}
+
+export function AllocateCorrectTokenLayerOnCanvas(canvas) {
+    let SearchForLayerWithObjectsOfType = CONFIG.Token.objectClass.name;
+    return canvas.tokens.children.find((clayer) => clayer.children.length > 0 && clayer.children[0].constructor.name == SearchForLayerWithObjectsOfType);
 }

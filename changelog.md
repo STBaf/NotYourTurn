@@ -1,5 +1,9 @@
 # Changelog
 
+### v2.1.3 - 14-09-2023
+Fixing a possible bug when other modules add additional layers for Tokens to canvas, like Vision 5e does
+(Bug occured in combination with Vision 5e module)
+
 ### v2.1.2 - 28-08-2023
 German translation revision contributed by RadicalEd - thanks!
 

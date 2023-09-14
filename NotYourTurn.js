@@ -4,7 +4,7 @@
  */
 
 import {registerSettings} from "./src/settings.js";
-import {checkCombat, whisperGM, sockets, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement} from "./src/misc.js";
+import {checkCombat, whisperGM, sockets, storeAllPositions, setTokenPositionOld, setTokenPositionNew, undoMovement, AllocateCorrectTokenLayerOnCanvas} from "./src/misc.js";
 
 new Date();
 let timer = 0; 
@@ -73,7 +73,7 @@ Hooks.on("canvasReady",(canvas) => {
         Hooks.on('refreshToken', OnRefreshTokenV11);
     }
 
-    let tokens = canvas.tokens.children[0].children;
+    let tokens = AllocateCorrectTokenLayerOnCanvas(canvas).children;
     for (let i=0; i<tokens.length; i++)
     {
         if (tokens[i].isOwner)
@@ -195,8 +195,8 @@ Hooks.on('updateToken',(a,b,c,d,e)=>{
 });
 
 async function blockMovement(data){
-    //Get the token shift
-    let token = canvas.tokens.children[0].children.find(p => p.id == data._id);
+    //Get the token shift    
+    let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == data._id);    
 
     let movementShift = {
         x: isNaN(data.x) ? 0 : data.x-token.x, 
@@ -206,7 +206,7 @@ async function blockMovement(data){
     let tokens = [];
     //Add controlled tokens to the combatants array, except the token whose turn it is, or tokens that are not in combat is nonCombat is true
     for (let i=0; i<NYTTcontrolledTokens.length; i++){
-        let token = canvas.tokens.children[0].children.find(p => p.id == NYTTcontrolledTokens[i]);
+        let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == NYTTcontrolledTokens[i]);
         let location = {x:token.x+movementShift.x, y:token.y+movementShift.y};
         if (checkCombat() && dialogWait == false && game.settings.get('NotYourTurn','AlwaysBlock') == false){
             const combatTokenId = game.combat.combatant.token.id;
@@ -261,7 +261,7 @@ async function blockMovement(data){
     else if (blockSett == 1){
         let names = "";
         for (let i=0; i<tokens.length; i++){
-            let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+            let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == tokens[i].id);
             setTokenPositionNew(tokens, NYTTokenPositionMap);
             names += "'" + token.name + "'";
             if (i+2 == tokens.length) names += game.i18n.localize("NotYourTurn.And");
@@ -324,7 +324,7 @@ async function blockMovement(data){
                     let names = "";
                     for (let i=0; i<tokens.length; i++){
                         setTokenPositionNew(tokens, NYTTokenPositionMap);
-                        let token = canvas.tokens.children[0].children.find(p => p.id == tokens[i].id);
+                        let token = AllocateCorrectTokenLayerOnCanvas(canvas).children.find(p => p.id == tokens[i].id);
                         names += "'" + token.name + "'";
                         if (i+2 == tokens.length) names += " and ";
                         else if (i+1 == tokens.length) names += " ";
