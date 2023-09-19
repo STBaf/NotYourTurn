@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.1.4 - 18-09-2023
+Fixing undefinied layer bug for scenes without tokens
+
 ### v2.1.3 - 14-09-2023
 Fixing a possible bug when other modules add additional layers for Tokens to canvas, like Vision 5e does
 (Bug occured in combination with Vision 5e module)

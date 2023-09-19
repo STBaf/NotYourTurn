@@ -3,12 +3,12 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "2.1.3",
+    "version": "2.1.4",
     "authors": [{
       "name": "STB",
       "url": "https://www.stbaf.de",
       "email": "andre@stbaf.de",
-      "discord": "STB#9841"
+      "discord": "stbaf"
     }],
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,

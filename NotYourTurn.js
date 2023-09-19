@@ -73,12 +73,16 @@ Hooks.on("canvasReady",(canvas) => {
         Hooks.on('refreshToken', OnRefreshTokenV11);
     }
 
-    let tokens = AllocateCorrectTokenLayerOnCanvas(canvas).children;
-    for (let i=0; i<tokens.length; i++)
+    let allocatedTokenLayer = AllocateCorrectTokenLayerOnCanvas(canvas);
+    if (allocatedTokenLayer != undefined)
     {
-        if (tokens[i].isOwner)
+        let tokens = allocatedTokenLayer.children;
+        for (let i=0; i<tokens.length; i++)
         {
-            NYTTcontrolledTokens.push(tokens[i].id);
+            if (tokens[i].isOwner)
+            {
+                NYTTcontrolledTokens.push(tokens[i].id);
+            }
         }
     }            
 });
