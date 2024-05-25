@@ -60,17 +60,15 @@ Hooks.on("canvasReady",(canvas) => {
     NYTTcontrolledTokens = [];
     NYTTokenPositionMap.clear();
 
-    // While on canvasReady in V10 X/Y of token was already filled with correct value, in V11 it is at CanvasReady still 0/0. So we need to track position later when set, seem to exist on first refreshToken.
-    // We can use the refreshToken in V11 globally since coords still the old before movement while in V10 already the new position (which would move token to actual position on Undo instead of back)
+    // While on canvasReady in V10 X/Y of token was already filled with correct value, in V11/V12 it is at CanvasReady still 0/0. So we need to track position later when set, seem to exist on first refreshToken.
+    // We can use the refreshToken in V11/V12 globally since coords still the old before movement while in V10 already the new position (which would move token to actual position on Undo instead of back)
     // Overall: V10 and V11 act different in token positions
     if (game.version.startsWith("10"))
     {
         storeAllPositions(NYTTokenPositionMap, canvas);    
-    }
-
-    if (game.version.startsWith("11"))
+    } else
     {
-        Hooks.on('refreshToken', OnRefreshTokenV11);
+        Hooks.on('refreshToken', OnRefreshTokenV11AndLater);
     }
 
     let allocatedTokenLayer = AllocateCorrectTokenLayerOnCanvas(canvas);
@@ -159,7 +157,7 @@ Hooks.on('controlToken', (token,controlled)=>{
     
 });
 
-function OnRefreshTokenV11(token)
+function OnRefreshTokenV11AndLater(token)
 {
     if (token.controlled || token.isOwner) {
         NYTTokenPositionMap.set(token.id, {x:token.x,y:token.y});

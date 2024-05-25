@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.2.0 - 25-05-2024
+Adding support for Foundry v12
+
 ### v2.1.4 - 18-09-2023
 Fixing undefinied layer bug for scenes without tokens
 

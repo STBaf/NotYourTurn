@@ -48,7 +48,7 @@ The operation of the module can be modified in the module settings. Here is an o
 ![moduleSettings](https://github.com/STBaf/NotYourTurn/blob/master/img/examples/ModuleSettings.png)
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on v10 and v11<br>
+<b>Foundry VTT:</b> Tested on v12, v11 and v10<br>
 For support of Foundry Version 0.7.9 - 9.280 use earlier versions 1.1.5 up to 1.2.8 of this module<br>
 <b>Module Incompatibilities:</b> None known<br>
 

@@ -3,8 +3,8 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "2.1.4",
-    "authors": [{
+    "version": "2.2.0",
+    "authors": [{      
       "name": "STB",
       "url": "https://www.stbaf.de",
       "email": "andre@stbaf.de",
@@ -15,7 +15,8 @@
     "minimumCoreVersion": 10,
     "compatibility": {
       "minimum": "10",
-      "verified": "11"
+      "verified": "12",
+      "maximum":  "12"
     },
     "languages": [
       {
