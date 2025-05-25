@@ -1,5 +1,12 @@
 # Changelog
 
+### v3.0.0 - 25-05-2025
+Update for Foundry v13. Seemingly working, but missing reset of the new ruler functionality of token get moved back to old
+position when not allowed to move. But restores block functionality, reseting ruler is worked on in upcoming version
+
+### v2.2.1 - 25-05-2025
+Closing version for Foundry v10 up to v12 for backward compatiblity or earlier Foundry version usage
+
 ### v2.2.0 - 25-05-2024
 Adding support for Foundry v12
 

@@ -24,8 +24,8 @@ Hooks.on('NotYourTurn',async(data) => {
         if (data.nonCombat == true) nonCombat = true;
         else if (data.nonCombat == false) nonCombat = false;
         else if (data.nonCombat == 'toggle') nonCombat = !game.settings.get('NotYourTurn','nonCombat');
-        await game.settings.set('NotYourTurn','nonCombat',nonCombat);
-        ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "blockMovement").active = nonCombat;
+        await game.settings.set('NotYourTurn','nonCombat',nonCombat);    
+        ui.controls.controls.tokens.tools.notyourturn_blockMovementButton.active = nonCombat;
         ui.controls.render();  
         storeAllPositions(NYTTokenPositionMap);
     }
@@ -35,7 +35,7 @@ Hooks.on('NotYourTurn',async(data) => {
         else if (data.combat == false) combat = false;
         else if (data.combat == 'toggle') combat = !game.settings.get('NotYourTurn','enable');
         await game.settings.set('NotYourTurn','enable',combat);
-        ui.controls.controls.find(controls => controls.name == "token").tools.find(tools => tools.name == "enableNotYourTurn").active = combat;
+        ui.controls.controls.tokens.tools.notyourturn_enableNotYourTurnButton.active = combat;
         ui.controls.render(); 
         storeAllPositions(NYTTokenPositionMap); 
     }
@@ -60,16 +60,7 @@ Hooks.on("canvasReady",(canvas) => {
     NYTTcontrolledTokens = [];
     NYTTokenPositionMap.clear();
 
-    // While on canvasReady in V10 X/Y of token was already filled with correct value, in V11/V12 it is at CanvasReady still 0/0. So we need to track position later when set, seem to exist on first refreshToken.
-    // We can use the refreshToken in V11/V12 globally since coords still the old before movement while in V10 already the new position (which would move token to actual position on Undo instead of back)
-    // Overall: V10 and V11 act different in token positions
-    if (game.version.startsWith("10"))
-    {
-        storeAllPositions(NYTTokenPositionMap, canvas);    
-    } else
-    {
-        Hooks.on('refreshToken', OnRefreshTokenV11AndLater);
-    }
+    Hooks.on('refreshToken', OnRefreshTokenV11AndLater);
 
     let allocatedTokenLayer = AllocateCorrectTokenLayerOnCanvas(canvas);
     if (allocatedTokenLayer != undefined)
@@ -88,32 +79,35 @@ Hooks.on("canvasReady",(canvas) => {
 //Register control button
 Hooks.on("getSceneControlButtons", async(controls) => {
     if (game.user.isGM) {
-        let tokenButton = controls.find(b => b.name == "token")
+        let tokenButton = controls.tokens.tools;
         if (tokenButton) {
-            tokenButton.tools.push(
-                {
-                    name: "enableNotYourTurn",
-                    title: game.i18n.localize("NotYourTurn.Enable"),
-                    icon: "fas fa-fist-raised",
-                    toggle: true,
-                    active: game.settings.get('NotYourTurn','enable'),
-                    visible: game.user.isGM,
-                    onClick: (value) => {
-                        setEnable(value);
-                    }
-                },
-                {
-                    name: "blockMovement",
-                    title: game.i18n.localize("NotYourTurn.ControlBtn"),
-                    icon: "fas fa-lock",
-                    toggle: true,
-                    active: game.settings.get('NotYourTurn','nonCombat'),
-                    visible: game.user.isGM,
-                    onClick: (value) => {
-                        setNonCombat(value);
-                    }
+
+            let enableNotYourTurnButton = {
+                name: "notyourturn_enableNotYourTurnButton",
+                title: game.i18n.localize("NotYourTurn.Enable"),
+                icon: "fas fa-fist-raised",
+                toggle: true,                
+                active: game.settings.get('NotYourTurn','enable'),
+                visible: game.user.isGM,
+                onChange: (event, active) => {
+                    setEnable(active);
                 }
-            );
+            };
+
+            let blockMovementButton = {
+                name: "notyourturn_blockMovementButton",
+                title: game.i18n.localize("NotYourTurn.ControlBtn"),
+                icon: "fas fa-lock",
+                toggle: true,                
+                active: game.settings.get('NotYourTurn','nonCombat'),
+                visible: game.user.isGM,
+                onChange: (event, active) => {
+                    setNonCombat(active);
+                }
+            };
+
+            tokenButton.notyourturn_enableNotYourTurnButton = enableNotYourTurnButton;
+            tokenButton.notyourturn_blockMovementButton = blockMovementButton;
         }
     }
 });
