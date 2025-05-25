@@ -3,7 +3,7 @@
     "name": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "2.3.0",
+    "version": "3.0.0",
     "authors": [{      
       "name": "STB",
       "url": "https://www.stbaf.de",
@@ -12,7 +12,7 @@
     }],
     "esmodules": ["./NotYourTurn.js"],
     "socket": true,
-    "minimumCoreVersion": 10,
+    "minimumCoreVersion": 13,
     "compatibility": {
       "minimum": "13",
       "verified": "13",
