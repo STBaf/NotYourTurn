@@ -1,5 +1,8 @@
 # Changelog
 
+### v2.2.1 - 25-05-2025
+Closing version for Foundry v10 up to v12 for backward compatiblity or earlier Foundry version usage
+
 ### v2.2.0 - 25-05-2024
 Adding support for Foundry v12
 
