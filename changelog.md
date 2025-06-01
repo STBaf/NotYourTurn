@@ -1,5 +1,8 @@
 # Changelog
 
+### v3.0.1 - 01-06-2025
+Removes old, unnecessary fields in the manifest.
+
 ### v3.0.0 - 25-05-2025
 Update for Foundry v13. Seemingly working, but missing reset of the new ruler functionality of token get moved back to old
 position when not allowed to move. But restores block functionality, reseting ruler is worked on in upcoming version
