@@ -1,5 +1,8 @@
 # Changelog
 
+### v4.0.0 - 16.06.2026
+Rework of codebase, make Module v14 ready
+
 ### v3.0.1 - 01-06-2025
 Removes old, unnecessary fields in the manifest.
 
