@@ -7,13 +7,13 @@ export function checkCombat(){
 }
 
 export function whisperGM(message){
-    for (let i=0; i<game.users.length; i++){
-        if (game.users[i].role > 2) 
+    game.users.forEach(user => {
+        if (user.role > 2) 
             ChatMessage.create({
                 content: message,
-                whisper: [game.users[i]._id]
+                whisper: [user._id]
         });                                                                                      
-    }
+    });
 }
 
 export async function storeAllPositions(map, useCanvas)
