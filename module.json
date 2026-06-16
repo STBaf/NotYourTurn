@@ -2,7 +2,7 @@
     "id": "NotYourTurn",
     "title": "Not Your Turn!",
     "description": "Block token movement if it's not the token's turn.",
-    "version": "4.0.0",
+    "version": "3.0.1",
     "authors": [{      
       "name": "STB",
       "url": "https://www.stbaf.de",
@@ -13,7 +13,8 @@
     "socket": true,
     "compatibility": {
       "minimum": "13",
-      "verified": "14"      
+      "verified": "13",
+      "maximum":  "13"
     },
     "languages": [
       {

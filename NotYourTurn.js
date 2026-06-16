@@ -16,11 +16,8 @@ let count = 0;
 let warningTimer = 0;
 let warningPeriod = 1000;
 let NYTTokenPositionMap = new Map();
-let TokenPositions = new Map();
 
-let moduleForcedMovement = false;
-
-Hooks.on('module.NotYourTurn',async(data) => { 
+Hooks.on('NotYourTurn',async(data) => { 
     if (game.user.isGM == false) return;
     let nonCombat;
     if (data.nonCombat != undefined) {
@@ -50,97 +47,34 @@ Hooks.on('updateSetting', async(setting, value, diff, key) => {
     }
 });
 
-async function handleSocketGMSide(payload) {
-    console.log('socketdata', payload);
-
-    //check if this user is the target, else return
-    if (game.userId != payload.receiver) return;
-        
-    if (payload.msgType == "requestMovement")
-    {
-        if (game.user.isGM == false) return;
-    
-        //get the name of the requesting user, and his/her token data
-        const user = game.users.get(payload.sender).name;
-
-        //build dialog
-        let applyChanges = 0;
-        let buttons = {
-        //Accept button, accepts the request
-            Accept: {
-                label: game.i18n.localize("NotYourTurn.Request_AcceptBtn"),
-                callback: () => applyChanges = 0
-            }
-        }
-        //Decline button, declines the request
-        buttons.Decline = {
-            label: game.i18n.localize("NotYourTurn.Request_DeclineBtn"),
-            callback: () => applyChanges = 1
-        }
-        
-        let d = new Dialog({
-            title: game.i18n.localize("NotYourTurn.Request_Title"),
-            content: game.i18n.localize("NotYourTurn.Request_Text1") + user + game.i18n.localize("NotYourTurn.Request_Text2") + payload.token.name + ".",
-            buttons,
-            default: "Decline",
-            close: html => {
-                
-                let ret = false;
-                
-                if (applyChanges == 0) {
-                    ret = true;
-                }
-                else if (applyChanges == 1) {                                                
-                    ret = false;
-                }
-
-                let payload2 = {
-                    "msgType": "requestMovement_GMack",
-                    "sender": game.userId, 
-                    "receiver": payload.sender, 
-                    "token": payload.token,
-                    "preMovePosition": payload.preMovePosition,
-                    "ret": ret
-                };
-
-                game.socket.emit('module.NotYourTurn', payload2);                
-            }
-        });
-        d.render(true);
-    }
-    else if (payload.msgType == "requestMovement_GMack"){
-        if (payload.ret == true)
-        { 
-            ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted")); 
-        }
-        else { 
-            ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
-            let resetToken = game.canvas.tokens.ownedTokens.find(x => x.document._id == payload.token._id);
-            moduleForcedMovement = true;
-            resetToken.document.update(payload.preMovePosition);            
-        }
-        setDuplicateCheck(false);
-        setGMwait(false);
-        setTimer(Date.now());
-    }    
-}
-
 Hooks.once('init', function(){
-    CONFIG.debug.hooks = true;
     registerSettings(); //in ./src/settings.js       
-
-    game.socket.on('module.NotYourTurn', handleSocketGMSide);
 });
 
-Hooks.once('ready', () => {
+Hooks.once('ready', ()=>{
     timer = Date.now();
-    moduleForcedMovement = false;
-    // sockets(NYTTokenPositionMap);
+    sockets(NYTTokenPositionMap);
 });
 
-/*Hooks.on("canvasReady",(canvas) => {
-    storeAllPositions(TokenPositions, canvas);
-});*/
+Hooks.on("canvasReady",(canvas) => {
+    NYTTcontrolledTokens = [];
+    NYTTokenPositionMap.clear();
+
+    Hooks.on('refreshToken', OnRefreshTokenV11AndLater);
+
+    let allocatedTokenLayer = AllocateCorrectTokenLayerOnCanvas(canvas);
+    if (allocatedTokenLayer != undefined)
+    {
+        let tokens = allocatedTokenLayer.children;
+        for (let i=0; i<tokens.length; i++)
+        {
+            if (tokens[i].isOwner)
+            {
+                NYTTcontrolledTokens.push(tokens[i].id);
+            }
+        }
+    }            
+});
 
 //Register control button
 Hooks.on("getSceneControlButtons", async(controls) => {
@@ -190,7 +124,7 @@ async function setNonCombat(value){
 }
 
 //Register the token position
-/*Hooks.on('controlToken', (token,controlled)=>{
+Hooks.on('controlToken', (token,controlled)=>{
     if (controlled && token.isOwner) {
                 
         NYTTokenPositionMap.set(token.id, {x:token.x,y:token.y});
@@ -215,170 +149,16 @@ async function setNonCombat(value){
         }
     }
     
-});*/
+});
 
-/*function OnRefreshTokenV11AndLater(token)
+function OnRefreshTokenV11AndLater(token)
 {
     if (token.controlled || token.isOwner) {
         NYTTokenPositionMap.set(token.id, {x:token.x,y:token.y});
     }    
-}*/
+}
 
-/*Hooks.on('refreshToken', (token, visibility) => {
-    if (token.isOwner) {
-        let position = { x: token.x, y: token.y };
-        TokenPositions.set(token.id, position);
-    }
-});*/
-
-Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
-
-    if (moduleForcedMovement) {
-        moduleForcedMovement = false;
-        return;
-    }
-
-    if (checkCombat() == false && game.settings.get('NotYourTurn','nonCombat') == false) { 
-        return;
-    };
-    if (checkCombat() && game.settings.get('NotYourTurn','enable') == false) { 
-        return;
-    };
-
-    if (token.isOwner) {
-
-        if (checkCombat())
-        {
-            // in combat and tokens turn nothing to do, you can move free
-            const combatTokenId = game.combat.combatant.token.id;
-            if (token.id == combatTokenId) {
-                return;
-            }
-        }        
-
-        //Get the block setting, depending on the setting of the user role
-        let role =  game.user.role;
-        let blockSetting = 0;
-        if (role == 1) blockSetting = game.settings.get("NotYourTurn","BlockPlayer");
-        else if (role == 2) blockSetting = game.settings.get("NotYourTurn","BlockTrusted");
-        else if (role == 3) blockSetting = game.settings.get("NotYourTurn","BlockAssistant");
-        else if (role == 4) blockSetting = game.settings.get("NotYourTurn","BlockGM");
-        if (blockSetting == 0) return;
-
-        //Always block blockSetting == 3
-        if (blockSetting == 3) {            
-            if (Date.now()-warningTimer > warningPeriod) {
-                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
-                warningTimer = Date.now();
-            }
-            return false;
-        }
-        else if (blockSetting == 1) { //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
-            if (Date.now()-warningTimer > warningPeriod) {
-                ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning"));
-                
-                if (game.settings.get("NotYourTurn","ChatMessages") == true && role < 10) 
-                    whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper")); 
-                warningTimer = Date.now();
-            }        
-        } 
-        else { //In all other cases, create a dialog box
-            
-            let preMovePosition = { x: token.x, y: token.y};
-
-            //Create a dialog, with buttons based on the current situation
-            let applyChanges = 0;
-            let buttons = {
-                //Undo button
-                Undo: {
-                    label: game.i18n.localize("NotYourTurn.Dialog_UndoBtn"),
-                    callback: () => applyChanges = 0
-                }
-            }
-            //Check if the role of the user. If applicable, add ignore button
-            if (game.settings.get("NotYourTurn","IgnoreButton")<role){
-                buttons.Ignore = {
-                    label: game.i18n.localize("NotYourTurn.Dialog_IgnoreBtn"),
-                    callback: () => applyChanges = 1
-                }
-            }
-            //Check if the user is player, add request button if enabled
-            if (game.settings.get("NotYourTurn","RequestButton")==true && role <4){
-                buttons.Request = {
-                    label: game.i18n.localize("NotYourTurn.Dialog_RequestBtn"),
-                    callback: () => applyChanges = 2
-                }
-            }
-
-            dialogWait = true;            
-
-            let d = new Dialog({
-                title: game.i18n.localize("NotYourTurn.Dialog_Title"),
-                content: game.i18n.localize("NotYourTurn.Dialog_Text")+ '<br><br>',
-                buttons,
-                default: "Undo",
-                close: html => {
-                    //If 'Undo' is pressed, move token back to previous position
-                    
-                    if (applyChanges == 0){ //undo                        
-                        dialogWait = false;
-                        moduleForcedMovement = true;
-                        token.update(preMovePosition);
-                        return;
-                    }
-
-                    //If 'Ignore' is pressed, continue movement
-                    else if (applyChanges == 1) { //ignore                        
-                        if (game.settings.get("NotYourTurn","ChatMessages")==true && role < 3)
-                        {
-                            whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper"));
-                        }
-                        dialogWait = false;
-                        return;
-                    }  
-
-                    else if (applyChanges == 2) { //request movement
-                        let users = game.users.contents;
-                        //Request movement from GM, then apply movement (GM can undo this)   
-                        for (let i=0; i < users.length; i++)
-                            if (users[i].role > 2) {
-                                if (users[i].viewedScene == canvas.scene.id){
-                                    GMwait = true;
-                                    duplicateCheck = false;
-                                    dialogWait = false;
-                                    let payload = {
-                                        "msgType": "requestMovement",
-                                        "sender": game.userId, 
-                                        "receiver": users[i].id, 
-                                        "token": token,
-                                        "preMovePosition": preMovePosition,
-                                        "scene": {
-                                            id: canvas.scene.id,
-                                            name: canvas.scene.name
-                                        }
-                                    };
-                                    game.socket.emit('module.NotYourTurn', payload);
-                                }
-                                else {
-                                    ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_GMnotOnScene"));
-                                    GMwait = false;
-                                    return false;
-                                }
-                                break;
-                            }
-                    }
-
-                }
-            });
-
-            d.render(true); 
-        }
-        
-        return;
-    }
-});
-
-Hooks.on('updateToken',(a,b,c,d)=>{
+Hooks.on('updateToken',(a,b,c,d,e)=>{
     const updateData = b;
     const userId = d;
 
@@ -407,7 +187,7 @@ Hooks.on('updateToken',(a,b,c,d)=>{
     if (count < NYTTcontrolledTokens.length) { return };
     count = 0;
     duplicateCheck = true;
-    //blockMovement(updateData);
+    blockMovement(updateData);
 });
 
 async function blockMovement(data){
@@ -565,7 +345,7 @@ async function blockMovement(data){
                                     "msgType": "requestMovement",
                                     "sender": game.userId, 
                                     "receiver": users[i].id, 
-                                    "token": tokens,
+                                    "tokens": tokens,
                                     "scene": {
                                         id: canvas.scene.id,
                                         name: canvas.scene.name
