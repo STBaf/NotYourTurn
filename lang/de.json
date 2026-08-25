@@ -21,6 +21,8 @@
     "NotYourTurn.ChatMessages_Hint": "Erzeugt eine Chatnachricht, wenn ein Token verschoben wird, obwohl er nicht an der Reihe ist, wenn er auf 'nur Warnung' oder 'Dialogfenster' eingestellt ist",
     "NotYourTurn.AlwaysBlock": "Kampfbewegungen immer blockieren",
     "NotYourTurn.AlwaysBlock_Hint": "Blockiere immer die Kampfbewegung, auch wenn der Spieler am Zug ist",
+    "NotYourTurn.OnlyOncePerCombatTurn": "Nur einmal pro Runde fragen",
+    "NotYourTurn.OnlyOncePerCombatTurn_Hint": "Fragt oder informiert bei entsprechender Konfiguration nur einmal pro Kampfrunde bzgl. einer unerlaubten Bewegung",
     
     "NotYourTurn.Dialog_Title": "Du bist nicht an der Reihe!",
     "NotYourTurn.Dialog_Text": "Du versuchst dich zu bewegen, obwohl du nicht dran bist",

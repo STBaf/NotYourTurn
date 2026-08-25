@@ -24,6 +24,8 @@
     "NotYourTurn.ChatMessages_Hint": "Crea un mensaje en el chat cuando se mueve un icono y no es su turno, siempre que se activen las opciones 'Avisar Solo' o 'Cuadro de Diálogo'",
     "NotYourTurn.AlwaysBlock": "En combate bloquear siempre el movimiento",
     "NotYourTurn.AlwaysBlock_Hint": "En combate bloquear siempre el movimiento, incluso si es el turno del icono",
+    "NotYourTurn.OnlyOncePerCombatTurn": "Only ask once per combat turn",
+    "NotYourTurn.OnlyOncePerCombatTurn_Hint": "Only ask or report once per combat turn if movement is allowed, keep last turn decision until next turn",    
     
     "NotYourTurn.Dialog_Title": "¡No es tu turno!",
     "NotYourTurn.Dialog_Text": "Estás intentando moverte, pero no es tu turno",

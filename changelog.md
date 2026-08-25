@@ -1,5 +1,8 @@
 # Changelog
 
+### v4.1.0 - 25.08.2026
+Adds an option to limit inquiries or requests to one interaction per combat round
+
 ### v4.0.0 - 16.06.2026
 Rework of codebase, make Module v14 ready
 

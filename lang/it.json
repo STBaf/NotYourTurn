@@ -21,6 +21,8 @@
     "NotYourTurn.ChatMessages_Hint": "Crea un messaggio in chat quando un token viene spostato quando non è il suo turno se impostato su 'solo avvisi' o 'finestra di dialogo'",
     "NotYourTurn.AlwaysBlock": "Blocca Sempre il Movimento del Combattente",
     "NotYourTurn.AlwaysBlock_Hint": "Blocca sempre il movimento in combattimento, anche quando è il turno del token",
+    "NotYourTurn.OnlyOncePerCombatTurn": "Only ask once per combat turn",
+    "NotYourTurn.OnlyOncePerCombatTurn_Hint": "Only ask or report once per combat turn if movement is allowed, keep last turn decision until next turn",
     
     "NotYourTurn.Dialog_Title": "Non è il tuo turno!",
     "NotYourTurn.Dialog_Text": "Stai cercando di muoverti, ma non è il tuo turno",

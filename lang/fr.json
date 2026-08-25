@@ -19,6 +19,8 @@
     "NotYourTurn.RequestButton_Hint": "Autoriser les joueurs à faire une requête au MJ pour autoriser leur mouvement",
     "NotYourTurn.ChatMessage": "Messages dans le chat",
     "NotYourTurn.ChatMessages_Hint": "Crée un message dans le chat quand un token est bougé quand ce n'est pas son tour si paramétré comme 'Alerte seulement' ou 'Boîte de dialogue'",
+    "NotYourTurn.OnlyOncePerCombatTurn": "Only ask once per combat turn",
+    "NotYourTurn.OnlyOncePerCombatTurn_Hint": "Only ask or report once per combat turn if movement is allowed, keep last turn decision until next turn",    
     
     "NotYourTurn.Dialog_Title": "Ce n'est pas votre tour !",
     "NotYourTurn.Dialog_Text": "Vous essayez de bouger, mais ce n'est pas votre tour !",

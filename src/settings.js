@@ -67,6 +67,14 @@ export const registerSettings = function() {
         default: false,
         type: Boolean
     });
+    game.settings.register('NotYourTurn','OnlyOncePerCombatTurn', {
+        name: "NotYourTurn.OnlyOncePerCombatTurn",
+        hint: "NotYourTurn.OnlyOncePerCombatTurn_Hint",
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean
+    });    
     game.settings.register('NotYourTurn','nonCombat', {
         name: "nonCombat",
         scope: "world",

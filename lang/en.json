@@ -21,6 +21,8 @@
     "NotYourTurn.ChatMessages_Hint": "Creates a chat message when a token is moved when it's not its turn if set to 'warning only' or 'dialog box'",
     "NotYourTurn.AlwaysBlock": "Always Block Combat Movement",
     "NotYourTurn.AlwaysBlock_Hint": "Always block combat movement, even when it's the token's turn",
+    "NotYourTurn.OnlyOncePerCombatTurn": "Only ask once per combat turn",
+    "NotYourTurn.OnlyOncePerCombatTurn_Hint": "Only ask or report once per combat turn if movement is allowed, keep last turn decision until next turn",
     
     "NotYourTurn.Dialog_Title": "It's not your turn!",
     "NotYourTurn.Dialog_Text": "You're trying to move, but it is not your turn",

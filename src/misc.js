@@ -13,3 +13,5 @@ export function whisperGM(message){
         });                                                                                      
     });
 }
+
+export const ActualDecisionState = Object.freeze({ UNSET: 'Unset', NO_MOVE: 'NoMove', MOVE: 'Move' });

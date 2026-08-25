@@ -4,7 +4,7 @@
  */
 
 import {registerSettings} from "./src/settings.js";
-import {checkCombat, whisperGM} from "./src/misc.js";
+import {checkCombat, whisperGM, ActualDecisionState} from "./src/misc.js";
 
 let timer = 0;
 let dialogWait = false;
@@ -13,6 +13,7 @@ let warningTimer = 0;
 let warningPeriod = 1000;
 
 let moduleForcedMovement = false;
+let CombatRoundDecision = ActualDecisionState.UNSET;
 
 async function handleSocketGMSide(payload) {    
     //check if this user is the target, else return
@@ -73,13 +74,15 @@ async function handleSocketGMSide(payload) {
     else if (payload.msgType == "requestMovement_GMack"){
         if (payload.ret == true)
         { 
-            ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted")); 
+            ui.notifications.info(game.i18n.localize("NotYourTurn.UI_RequestGranted"));
+            CombatRoundDecision = ActualDecisionState.MOVE;
         }
         else { 
             ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_RequestDeclined"));
             let resetToken = game.canvas.tokens.ownedTokens.find(x => x.document._id == payload.token._id);
             moduleForcedMovement = true;
-            resetToken.document.update(payload.preMovePosition);            
+            resetToken.document.update(payload.preMovePosition);
+            CombatRoundDecision = ActualDecisionState.NO_MOVE;
         }
     }    
 }
@@ -91,7 +94,8 @@ Hooks.once('init', function(){
 
 Hooks.once('ready', () => {
     timer = Date.now();
-    moduleForcedMovement = false;    
+    moduleForcedMovement = false;
+    CombatRoundDecision = ActualDecisionState.UNSET;
 });
 
 //Register control button
@@ -137,6 +141,10 @@ async function setNonCombat(value){
     await game.settings.set('NotYourTurn','nonCombat',value);
 }
 
+Hooks.on('combatTurnChange', (combat, prior, current) => {
+    CombatRoundDecision = ActualDecisionState.UNSET;
+});
+
 Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
 
     if (moduleForcedMovement) {
@@ -144,13 +152,27 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
         return;
     }
 
+    // no combat, free movement, do nothing
     if (checkCombat() == false && game.settings.get('NotYourTurn','nonCombat') == false) { 
         return;
     };
+
+    // combat, but blocking in combat disabled, do nothing
     if (checkCombat() && game.settings.get('NotYourTurn','enable') == false) { 
         return;
     };
 
+    // check decision in same round
+    let useLastDecision = game.settings.get('NotYourTurn', 'OnlyOncePerCombatTurn');
+    if (useLastDecision && CombatRoundDecision != ActualDecisionState.UNSET) {
+        if (CombatRoundDecision == ActualDecisionState.NO_MOVE) {
+            return false;
+        } else if (CombatRoundDecision == ActualDecisionState.MOVE) {
+            return;
+        }
+    }
+
+    // blocking and let's decide what to do
     if (token.isOwner) {
 
         if (checkCombat())
@@ -177,6 +199,7 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
                 ui.notifications.warn(game.i18n.localize("NotYourTurn.UI_Warning")); 
                 warningTimer = Date.now();
             }
+            CombatRoundDecision = ActualDecisionState.NO_MOVE;
             return false;
         }
         else if (blockSetting == 1) { //Check if 'warning only' is set for the turn block function, if so, continue movement and give warning
@@ -186,7 +209,8 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
                 if (game.settings.get("NotYourTurn","ChatMessages") == true && role < 10) 
                     whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper")); 
                 warningTimer = Date.now();
-            }        
+            }       
+            CombatRoundDecision = ActualDecisionState.MOVE; 
         } 
         else { //In all other cases, create a dialog box
             
@@ -230,6 +254,7 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
                         dialogWait = false;
                         moduleForcedMovement = true;
                         token.update(preMovePosition);
+                        CombatRoundDecision = ActualDecisionState.NO_MOVE;
                         return;
                     }
 
@@ -240,6 +265,7 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
                             whisperGM(token.name + game.i18n.localize("NotYourTurn.MovementWhisper"));
                         }
                         dialogWait = false;
+                        CombatRoundDecision = ActualDecisionState.MOVE;
                         return;
                     }  
 
@@ -279,6 +305,11 @@ Hooks.on('preMoveToken', (token, waydata, terrainOptions) => {
             d.render(true); 
         }
         
+        if (CombatRoundDecision == ActualDecisionState.UNSET)
+        {
+            CombatRoundDecision = ActualDecisionState.MOVE;
+        }
+
         return;
     }
 });
